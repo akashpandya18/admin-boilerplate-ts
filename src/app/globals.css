@@ -2,32 +2,283 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+html {
+  overflow: auto !important;
+  padding-right: unset !important;
+  position: unset !important;
+}
+
+.sidebar-container::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 21px;
+  height: 3px;
+}
+
+.sidebar-container::-webkit-scrollbar-track {
+  background: #18202f !important;
+}
+
+/* Handle */
+.sidebar-container::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: linear-gradient(
+    89.99deg,
+    #3a47ab 0.01%,
+    #4a56db 98.9%
+  ) !important;
+}
+
+/* Handle on hover */
+.sidebar-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    89.99deg,
+    #3a47ab 0.01%,
+    #4a56db 98.9%
+  ) !important;
+}
+
+.demo-editor {
+  height: 400px !important;
+  padding: 0 10px;
+  border: 1px solid #f1f1f1;
+  margin-top: 10px;
+  border-radius: 2px;
+}
+
+.disabled-editor {
+  background: #fafafa;
+  cursor: default;
+}
+
+.disabled-toolbar {
+  display: none !important;
+}
+
+@media screen and (max-width: 576px) {
+  .demo-editor {
+    min-height: 200px;
+  }
+}
+@media screen and (max-width: 321px) {
+  .demo-editor {
+    min-height: 150px;
+  }
+}
+.rh5v-PlayPause_component svg {
+  margin: auto;
+  width: 30px;
+  height: 30px;
+}
+.rh5v-PlayPause_component:hover {
+  background-color: unset !important;
+}
+.rh5v-Volume_component svg {
+  margin: auto;
+  width: 30px;
+  height: 30px;
+}
+.rh5v-Fullscreen_component svg {
+  margin: auto;
+  width: 30px;
+  height: 30px;
+}
+.rh5v-Fullscreen_component:hover {
+  background-color: unset !important;
+}
+.rh5v-DefaultPlayer_component,
+.rh5v-DefaultPlayer_video {
+  border: 1.8px solid rgba(0, 0, 0, 0.7);
+  /*border-radius: 15px;*/
+}
+/* .rh5v-DefaultPlayer_controls { */
+/*border-bottom-left-radius: 15px;*/
+/*border-bottom-right-radius: 15px;*/
+/* } */
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+/*FILTER SCROLL*/
+
+.filter-container::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 21px;
+  height: 3px;
+}
+
+.filter-container::-webkit-scrollbar-track {
+  background: #d7d7da !important;
+}
+
+/* Handle */
+.filter-container::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: linear-gradient(
+    89.99deg,
+    #b4b4b4 0.01%,
+    #b4b4b4 98.9%
+  ) !important;
+}
+
+/* Handle on hover */
+.filter-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    89.99deg,
+    #b4b4b4 0.01%,
+    #b4b4b4 98.9%
+  ) !important;
+}
+
+.DraftEditor-editorContainer .public-DraftEditor-content h1 {
+  font-size: 2em !important;
+  font-weight: bolder !important;
+}
+
+.DraftEditor-editorContainer .public-DraftEditor-content h2 {
+  font-weight: bolder !important;
+  font-size: 1.5em !important;
+}
+
+.DraftEditor-editorContainer .public-DraftEditor-content h3 {
+  font-weight: bolder !important;
+  font-size: 1.7em !important;
+}
+
+.DraftEditor-editorContainer .public-DraftEditor-content h4 {
+  font-size: 1em !important;
+  font-weight: bolder !important;
+}
+
+.DraftEditor-editorContainer .public-DraftEditor-content h5 {
+  font-size: 0.83em !important;
+  font-weight: bolder !important;
+}
+
+.DraftEditor-editorContainer .public-DraftEditor-content h6 {
+  font-size: 0.67em !important;
+  font-weight: bolder !important;
+}
+
+.selected {
+  background: lightgray;
+  border-radius: 15px;
+  padding: 12px;
+}
+
+.unselected {
+  padding: 12px;
+  opacity: 0.3;
+}
+
+.chart canvas {
+  height: 163px !important;
+}
+
+.webkit_in {
+  display: -webkit-inline-box;
+}
+
+.webkit_out {
+  display: table-caption;
+}
+
+.apexcharts-legend.apx-legend-position-bottom.apexcharts-align-left,
+.apexcharts-legend.apx-legend-position-top.apexcharts-align-left,
+.apexcharts-legend.apx-legend-position-right,
+.apexcharts-legend.apx-legend-position-left {
+  display: none !important;
+}
+
+/* CUSTOM COMMON RADIO BUTTON STYLE */
+input[type='radio'] {
+  accent-color: #434fc5;
+}
+
+.ckeditor_outer {
+  height: 500px !important;
+}
+
+.cke_contents {
+  height: 390px !important;
+}
+
+@media only screen and (max-width: 1400px) and (min-width: 1320px) {
+  .dashboard_sec2_custom {
+    width: 55%;
+    margin-right: 20px;
   }
 }
