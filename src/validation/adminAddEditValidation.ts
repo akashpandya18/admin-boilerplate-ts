@@ -2,24 +2,35 @@ import validator from 'validator';
 import { DeadDomainEmail } from '@/lib/utils';
 
 interface Data {
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
   email: string;
-}
-
-interface SelectedMenu {
-  value: number;
+  password: string;
+  gym_id: number;
+  status: number;
+  gym: {
+    id: string;
+    name: string;
+    domain_name: string;
+  };
 }
 
 interface Errors {
-  name?: string;
-  email?: string;
-  selectedMenu?: string;
+  first_name: string;
+  email: string;
+  selectedMenu: string;
 }
 
-function AdminAddEditValidation(data: Data, selectedMenu: SelectedMenu) {
-  const errors: Errors = {};
+function AdminAddEditValidation(data: Data, selectedMenu: { value: number }) {
+  const errors: Errors = {
+    first_name: '',
+    email: '',
+    selectedMenu: '',
+  };
   const isDeadDomain = DeadDomainEmail(data.email);
-  if (validator.isEmpty(data.name.trim())) errors.name = 'Please enter name.';
+  if (validator.isEmpty(data.first_name.trim()))
+    errors.first_name = 'Please enter name.';
 
   if (validator.isEmpty(data.email.trim()))
     errors.email = 'Please enter email address.';

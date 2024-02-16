@@ -48,13 +48,13 @@ interface TableProps {
   columns: any;
   data: any;
   setDeleteId: any;
-  setSelectedRow: any;
+  setSelectedRow?: any;
   name: string;
   setSortBy: any;
   refreshTable: any;
   loader: boolean;
   setSearchTerm: any;
-  message: string;
+  message?: string;
   contentType?: string;
 }
 

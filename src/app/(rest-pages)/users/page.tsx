@@ -4,11 +4,11 @@ import { useState, useEffect, SetStateAction } from 'react';
 import { useRouter } from 'next/navigation';
 import { PER_PAGE } from '@/lib/constants';
 import { ErrorToast, SuccessToast } from '@/lib/utils';
-// import Breadcrumb from '@/app/components/common/Breadcrumb';
-// import SelectMenu from '@/app/components/common/SelectMenu';
-// import SearchInput from '@/app/components/common/Input/SearchInput';
-// import Table from '@/app/components/common/Table';
-// import Pagination from '@/app/components/common/Pagination';
+import Breadcrumb from '@/components/common/Breadcrumb';
+import SelectMenu from '@/components/common/SelectMenu';
+import SearchInput from '@/components/common/Input/SearchInput';
+import Table from '@/components/common/Table';
+import Pagination from '@/components/common/Pagination/Pagination';
 import axios from 'axios';
 
 const pages = [{ name: 'Users', href: '/users' }];
@@ -155,7 +155,7 @@ const Users = () => {
     }
   }, [search]);
 
-  const handlePerPage = (perPage) => {
+  const handlePerPage = (perPage: any) => {
     setSelectedPerPage(perPage);
     handlePagination(1, perPage.value, search, sortBy, sortType);
   };
@@ -163,7 +163,7 @@ const Users = () => {
   const refreshTable = () =>
     handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
 
-  const deleteHandler = async (id) => {
+  const deleteHandler = async (id: any) => {
     setLoader(true);
     setSearch('');
     try {
@@ -172,17 +172,17 @@ const Users = () => {
       if (response) {
         if (response?.data?.meta?.code === 1) {
           handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
-          successToast(response?.data?.meta?.message);
+          SuccessToast(response?.data?.meta?.message);
         } else if (response?.data?.meta?.code === 0) {
           setLoader(false);
-          errorToast(response?.data?.meta?.message);
+          ErrorToast(response?.data?.meta?.message);
         } else {
           setLoader(false);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoader(false);
-      errorToast(error?.response?.data?.message);
+      ErrorToast(error?.response?.data?.message);
     }
   };
 
@@ -247,11 +247,11 @@ const Users = () => {
             data={usersList}
             name={'users_table'}
             setDeleteId={deleteHandler}
-            bottomBorder={totalCount > selectedPerPage?.value}
+            // bottomBorder={totalCount > selectedPerPage?.value}
             refreshTable={refreshTable}
-            setSortBy={(sort) => handleSortBy(sort)}
+            setSortBy={(sort: SetStateAction<string>) => handleSortBy(sort)}
             loader={loader}
-            setSearchTerm={(data) => setSearch(data)}
+            setSearchTerm={(data: SetStateAction<string>) => setSearch(data)}
             message={
               'Are you sure you want to delete this record? This action cannot be undone.'
             }
@@ -266,7 +266,7 @@ const Users = () => {
             pageSize={selectedPerPage?.value}
             onPageChange={(page) =>
               handlePagination(
-                page,
+                Number(page),
                 selectedPerPage?.value,
                 search,
                 sortBy,

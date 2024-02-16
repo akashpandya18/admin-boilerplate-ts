@@ -14,13 +14,13 @@ interface CommonInputProps {
   error: string;
   type: string;
   onChange: (e: any) => void;
-  disabled: boolean;
+  disabled?: boolean;
   isRequired: boolean;
-  isIcon: boolean;
-  placeholder: string;
+  isIcon?: boolean;
+  placeholder?: string;
   classNames?: string;
   isLengthValidate?: boolean;
-  domain_url_name: string;
+  domain_url_name?: string;
   autocomplete?: string;
 }
 

@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { errorToast, successToast } from '@/app/utils/helper';
-import Loader from '@/app/components/common/Loader';
-import CommonInput from '@/app/components/common/Input/CommonInput';
-import changePassValidations from '@/app/validation/changePassValidations';
+import { ErrorToast, SuccessToast } from '@/lib/utils';
+import Loader from '@/components/common/Loader';
+import CommonInput from '@/components/common/Input/CommonInput';
+import changePassValidations from '@/validation/changePassValidations';
 import axios from 'axios';
-import PrimaryButton from '@/app/components/common/Buttons/PrimaryButton';
-import Breadcrumb from '@/app/components/common/Breadcrumb';
+import PrimaryButton from '@/components/common/Buttons/PrimaryButton';
+import Breadcrumb from '@/components/common/Breadcrumb';
 
 const pages = [
   { name: 'Change Password', href: '/change-password', current: true },
@@ -21,9 +21,17 @@ const ChangePassword = () => {
   });
 
   const [loader, setLoader] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setError] = useState<{
+    password: string;
+    newPassword: string;
+    confirmPassword: string;
+  }>({
+    password: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setError((prevState) => ({
       ...prevState,
       [e.target.name]: '',
@@ -35,7 +43,7 @@ const ChangePassword = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const { errors, isValid } = changePassValidations(form);
     if (isValid) {
@@ -59,21 +67,25 @@ const ChangePassword = () => {
               confirmPassword: '',
             });
             setLoader(false);
-            successToast(response?.data?.meta?.message);
+            SuccessToast(response?.data?.meta?.message);
           } else if (response?.data?.meta?.code === 0) {
             setLoader(false);
-            errorToast(response?.data?.meta?.message);
+            ErrorToast(response?.data?.meta?.message);
           } else {
             setLoader(false);
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         setLoader(false);
         setError(error);
       }
     } else {
       setLoader(false);
-      setError(errors);
+      setError({
+        password: errors.password || '',
+        newPassword: errors.newPassword || '',
+        confirmPassword: errors.confirmPassword || '',
+      });
     }
   };
 
@@ -126,7 +138,11 @@ const ChangePassword = () => {
                 isIcon
               />
               <div className='text-end'>
-                <PrimaryButton btnText={'Save'} btnType='submit' />
+                <PrimaryButton
+                  btnText={'Save'}
+                  btnType='submit'
+                  disabled={false}
+                />
               </div>
             </div>
           </form>

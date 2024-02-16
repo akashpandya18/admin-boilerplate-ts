@@ -1,13 +1,44 @@
 'use client';
 
-import PrimaryButton from '@/app/components/common/Buttons/PrimaryButton';
-import SecondaryButton from '@/app/components/common/Buttons/SecondaryButton';
-import CommonInput from '@/app/components/common/Input/CommonInput';
-import SelectMenu from '@/app/components/common/SelectMenu';
-import LazyLoadImageProp from '@/app/components/common/LazyLoadImage';
+import PrimaryButton from '@/components/common/Buttons/PrimaryButton';
+import SecondaryButton from '@/components/common/Buttons/SecondaryButton';
+import CommonInput from '@/components/common/Input/CommonInput';
+import SelectMenu from '@/components/common/SelectMenu';
+import LazyLoadImageProp from '@/components/common/LazyLoadImage';
 import ColorPicker from 'react-pick-color';
 import { HiCamera } from 'react-icons/hi2';
-import { truncateParagraph } from '@/app/utils/helper';
+import { truncateParagraph } from '@/lib/utils';
+
+interface GymComponentProps {
+  form: any;
+  error: any;
+  isView: boolean;
+  MainStatus: any;
+  action: string;
+  radioHandler: any;
+  handleSubmit: any;
+  handleChange: any;
+  onSelectFile: any;
+  selectRef: any;
+  imageRef: any;
+  loader: boolean;
+  preview: any;
+  LogoIcon: any;
+  isColorPickerOpen: boolean;
+  setIsColorPickerOpen: any;
+  setForm: any;
+  userFontType: any;
+  selectedWorkoutMenu: any;
+  handleWorkOutMenuChange: any;
+  selectedSectionMenu: any;
+  handleSectionMenuChange: any;
+  selectedMovementMenu: any;
+  handleMovementChange: any;
+  userFontSize: any;
+  selectedSizeMenu: any;
+  handleSizeMenuChange: any;
+  previewFontData: any;
+}
 
 const GymComponent = ({
   form,
@@ -38,7 +69,7 @@ const GymComponent = ({
   selectedSizeMenu,
   handleSizeMenuChange,
   previewFontData,
-}) => {
+}: GymComponentProps) => {
   return (
     <div className='mt-6'>
       <form onSubmit={handleSubmit}>
@@ -104,6 +135,8 @@ const GymComponent = ({
                 disabled={isView}
                 onChange={handleChange}
                 label='Address'
+                isRequired={false}
+                error={''}
               />
               <CommonInput
                 id='domain_name'
@@ -146,7 +179,7 @@ const GymComponent = ({
                     <ColorPicker
                       color={form?.theme}
                       onChange={(color) => {
-                        setForm((prevState) => ({
+                        setForm((prevState: any) => ({
                           ...prevState,
                           theme: color.hex,
                         }));
@@ -217,7 +250,7 @@ const GymComponent = ({
                 label='Workout Count'
                 error={error.default_workout_count}
                 isRequired
-                min={0}
+                // min={0}
               />
               <div>
                 <label className='block text-sm font-medium text-gray-700'>
@@ -225,7 +258,7 @@ const GymComponent = ({
                 </label>
                 <fieldset className='mt-4'>
                   <div className='flex space-x-4'>
-                    {MainStatus.map((status, index) => {
+                    {MainStatus.map((status: any, index: number) => {
                       return (
                         <div key={index} className='flex items-center'>
                           <input
@@ -271,7 +304,11 @@ const GymComponent = ({
                   <div />
                   <div className='flex items-center justify-center mt-12 md:flex-row lg:ml-auto md:text-right'>
                     <SecondaryButton btnText='Cancel' btnType='button' />
-                    <PrimaryButton btnText='Submit' btnType='submit' />
+                    <PrimaryButton
+                      btnText='Submit'
+                      btnType='submit'
+                      disabled={false}
+                    />
                   </div>
                 </>
               )}

@@ -2,16 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  errorToast,
-  getLocalStorageItem,
-  successToast,
-} from '@/app/utils/helper';
-import Loader from '@/app/components/common/Loader';
-import CommonInput from '@/app/components/common/Input/CommonInput';
-import forgotPassValidation from '@/app/validation/forgotPasswordValidation';
+import { ErrorToast, getLocalStorageItem, SuccessToast } from '@/lib/utils';
+import Loader from '@/components/common/Loader';
+import CommonInput from '@/components/common/Input/CommonInput';
+import forgotPassValidation from '@/validation/forgotPasswordValidation';
 import axios from 'axios';
 import { HiChevronLeft } from 'react-icons/hi2';
+import { Button } from '@/components/ui/button';
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -20,10 +17,10 @@ const ForgotPassword = () => {
   });
 
   const [loader, setLoader] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setError] = useState<any>({});
 
-  const handleChange = (e) => {
-    setError((prevState) => ({
+  const handleChange = (e: any) => {
+    setError((prevState: any) => ({
       ...prevState,
       [e.target.name]: '',
     }));
@@ -40,7 +37,7 @@ const ForgotPassword = () => {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const { errors, isValid } = forgotPassValidation(form);
     if (isValid) {
@@ -58,11 +55,11 @@ const ForgotPassword = () => {
         if (response) {
           if (response?.data?.meta?.code === 3) {
             setLoader(false);
-            successToast(response?.data?.meta?.message);
+            SuccessToast(response?.data?.meta?.message);
             router.push(`/reset-password?email=${form.email}`);
           } else if (response?.data?.meta?.code === 0) {
             setLoader(false);
-            errorToast(response?.data?.meta?.message);
+            ErrorToast(response?.data?.meta?.message);
           } else {
             setLoader(false);
           }
@@ -116,12 +113,13 @@ const ForgotPassword = () => {
                   />
 
                   <div className='text-center'>
-                    <button
+                    <Button
                       type='submit'
+                      variant={'default'}
                       className='w-full px-10 py-2 text-sm font-medium text-white border border-transparent shadow-sm rounded-3xl bg-gradient-to-r from-admin-primary to-admin-secondary sm:py-3 hover:bg-admin-primary focus:outline-none focus:ring-2 focus:ring-admin-primary focus:ring-offset-2'
                     >
                       Submit
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>

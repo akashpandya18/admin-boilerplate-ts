@@ -1,10 +1,44 @@
 'use client';
 
-import Breadcrumb from '@/app/components/common/Breadcrumb';
-import PrimaryButton from '../../common/Buttons/PrimaryButton';
-import SecondaryButton from '../../common/Buttons/SecondaryButton';
-import CommonInput from '../../common/Input/CommonInput';
-import SelectMenu from '../../common/SelectMenu';
+import Breadcrumb from '@/components/common/Breadcrumb';
+import PrimaryButton from '@/components/common/Buttons/PrimaryButton';
+import SecondaryButton from '@/components/common/Buttons/SecondaryButton';
+import CommonInput from '@/components/common/Input/CommonInput';
+import SelectMenu from '@/components/common/SelectMenu';
+
+interface UserComponentProps {
+  pages: any[];
+  form: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    gym_id: number;
+    status: number;
+    gym: {
+      id: string;
+      name: string;
+      domain_name: string;
+    };
+  };
+  error: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    selectedMenu: string;
+  };
+  isView: boolean;
+  MainStatus: { name: string; value: number }[];
+  propsAction: string;
+  radioHandler: (e: any) => void;
+  handleSubmit: (e: any) => void;
+  handleChange: (e: any) => void;
+  userGymType: any[];
+  selectedMenu: any;
+  handleMenuChange: (e: any) => void;
+}
 
 const UserComponent = ({
   pages,
@@ -19,7 +53,7 @@ const UserComponent = ({
   userGymType,
   selectedMenu,
   handleMenuChange,
-}) => {
+}: UserComponentProps) => {
   return (
     <>
       <Breadcrumb pageList={pages} />
@@ -37,7 +71,7 @@ const UserComponent = ({
                   label='First Name'
                   disabled={isView}
                   error={error.first_name}
-                  // isRequired
+                  isRequired={false}
                 />
                 <CommonInput
                   id='last_name'
@@ -48,7 +82,7 @@ const UserComponent = ({
                   label='Last Name'
                   disabled={isView}
                   error={error.last_name}
-                  // isRequired
+                  isRequired={false}
                 />
                 <CommonInput
                   id='email'
@@ -132,7 +166,11 @@ const UserComponent = ({
               ) : (
                 <div className='flex items-center justify-center mt-12 md:block md:ml-auto md:text-right'>
                   <SecondaryButton btnText='Cancel' btnType='button' />
-                  <PrimaryButton btnText='Submit' btnType='submit' />
+                  <PrimaryButton
+                    btnText='Submit'
+                    btnType='submit'
+                    disabled={false}
+                  />
                 </div>
               )}
             </div>

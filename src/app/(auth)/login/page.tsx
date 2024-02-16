@@ -3,15 +3,18 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  errorToast,
+  ErrorToast,
   getLocalStorageItem,
   setLocalStorageItem,
-} from '@/app/utils/helper';
-import Loader from '@/app/components/common/Loader';
-import CommonInput from '@/app/components/common/Input/CommonInput';
-import loginValidation from '@/app/validation/loginValidation';
+} from '@/lib/utils';
+import Loader from '@/components/common/Loader';
+import CommonInput from '@/components/common/Input/CommonInput';
+import loginValidation from '@/validation/loginValidation';
 import axios from 'axios';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 const Login = () => {
   const router = useRouter();
@@ -20,10 +23,10 @@ const Login = () => {
     password: '',
   });
   const [loader, setLoader] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setError] = useState<any>({});
 
-  const handleChange = (e) => {
-    setError((prevState) => ({
+  const handleChange = (e: any) => {
+    setError((prevState: any) => ({
       ...prevState,
       [e.target.name]: '',
     }));
@@ -34,7 +37,7 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const { errors, isValid } = loginValidation(form);
     if (isValid) {
@@ -63,7 +66,7 @@ const Login = () => {
             router.push('/users');
           } else if (response?.data?.meta?.code === 0) {
             setLoader(false);
-            errorToast(response?.data?.meta?.message);
+            ErrorToast(response?.data?.meta?.message);
           } else {
             setLoader(false);
           }
@@ -139,18 +142,18 @@ const Login = () => {
                     />
                     <div className='flex items-center justify-between w-full !mt-4'>
                       <div className='flex items-center'>
-                        <input
+                        <Input
                           id='remember-me'
                           name='remember-me'
                           type='checkbox'
                           className='w-4 h-4 border-gray-300 rounded cursor-pointer accent-admin-primary text-admin-primary focus:ring-admin-primary'
                         />
-                        <label
+                        <Label
                           htmlFor='remember-me'
                           className='block ml-2 text-sm text-gray-900 cursor-pointer'
                         >
                           Remember me
-                        </label>
+                        </Label>
                       </div>
 
                       <div className='text-sm'>
@@ -165,12 +168,13 @@ const Login = () => {
                   </div>
 
                   <div className='text-center'>
-                    <button
+                    <Button
                       type='submit'
+                      variant={'default'}
                       className='w-full px-10 py-2 text-sm font-medium text-white border border-transparent shadow-sm rounded-3xl bg-gradient-to-r from-admin-primary to-admin-secondary sm:py-3 hover:bg-admin-primary focus:outline-none focus:ring-2 focus:ring-admin-primary focus:ring-offset-2'
                     >
                       Login
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>

@@ -7,13 +7,17 @@ interface Data {
 }
 
 interface Errors {
-  password?: string;
-  newPassword?: string;
-  confirmPassword?: string;
+  password: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 function changePassValidations(data: Data) {
-  const errors: Errors = {};
+  const errors: Errors = {
+    password: '',
+    newPassword: '',
+    confirmPassword: '',
+  };
   if (validator.isEmpty(data.password.trim()))
     errors.password = 'Please enter password.';
   else if (data.password.length < 6)

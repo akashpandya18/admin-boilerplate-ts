@@ -15,7 +15,7 @@ interface DeletePopupProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   setDelete: (value: boolean) => void;
-  message: string;
+  message?: string;
   title?: string;
 }
 

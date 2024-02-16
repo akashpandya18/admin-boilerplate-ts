@@ -7,7 +7,7 @@ interface SearchInputProps {
   type: string;
   onChange: (e: any) => void;
   placeholder: string;
-  value: string;
+  value?: string;
 }
 
 const SearchInput = ({

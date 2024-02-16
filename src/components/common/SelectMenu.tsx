@@ -7,7 +7,7 @@ import { classNames } from '@/lib/utils';
 
 interface SelectMenuProps {
   menuList: any;
-  label: string;
+  label?: string;
   setSelectedMenu: any;
   defaultSelected: any;
   disabled?: boolean;

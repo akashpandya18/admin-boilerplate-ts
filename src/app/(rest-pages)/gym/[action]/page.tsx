@@ -3,21 +3,21 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Breadcrumb from '@/app/components/common/Breadcrumb';
-import Loader from '@/app/components/common/Loader';
-import adminGymAddEditValidation from '@/app/validation/adminGymAddEditValidation';
+import Breadcrumb from '@/components/common/Breadcrumb';
+import Loader from '@/components/common/Loader';
+import adminGymAddEditValidation from '@/validation/adminGymAddEditValidation';
 import './fonts.css';
 import LogoIcon from '@/public/assets/images/logo-upload-icon.png';
 import {
   capitalize,
-  errorToast,
-  successToast,
+  ErrorToast,
+  SuccessToast,
   getFileType,
   capitalizeFirstWord,
-} from '@/app/utils/helper';
+} from '@/lib/utils';
 import axios from 'axios';
 
-import GymComponent from '@/app/components/PageComponents/users/GymComps';
+import GymComponent from '@/components/PageComponents/GymComps';
 
 export const FONT_TYPE = [
   // { name: 'Select Font', key: '' },
@@ -81,27 +81,45 @@ export const STATUS = [
   { name: 'Inactive', value: 0 },
 ];
 
-const PerformActionsOnGym = ({ params }) => {
+interface PerformActionsOnGymProps {
+  params: {
+    id: any;
+    action: string;
+  };
+}
+
+const PerformActionsOnGym = ({ params }: PerformActionsOnGymProps) => {
   const action = params.action;
   const router = useRouter();
 
   const imageRef = useRef(null);
   const selectRef = useRef(null);
   const [error, setError] = useState({});
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState({} as any);
   const [isView, setIsView] = useState(false);
   const [preview, setPreview] = useState('');
-  const [userFontType, setUserFontType] = useState([]);
-  const [selectedWorkoutMenu, setWorkoutSelectedMenu] = useState({});
-  const [selectedSectionMenu, setSectionSelectedMenu] = useState({});
-  const [selectedMovementMenu, setMovementSelectedMenu] = useState({});
+  const [userFontType, setUserFontType] = useState<any[]>([]);
+  const [selectedWorkoutMenu, setWorkoutSelectedMenu] = useState<any>({});
+  const [selectedSectionMenu, setSectionSelectedMenu] = useState<any>({});
+  const [selectedMovementMenu, setMovementSelectedMenu] = useState<any>({});
 
-  const [userFontSize, setUserFontSize] = useState([]);
-  const [selectedSizeMenu, setSelectedSizeMenu] = useState({});
+  const [userFontSize, setUserFontSize] = useState<any[]>([]);
+  const [selectedSizeMenu, setSelectedSizeMenu] = useState<any>({});
 
-  const [previewFontData, setPreviewFontData] = useState(
-    FONT_PREVIEW_DATA.medium
-  );
+  const [previewFontData, setPreviewFontData] = useState<{
+    header: {
+      fontSize: string;
+      fontWeight: string;
+    };
+    subheader: {
+      fontSize: string;
+      fontWeight: string;
+    };
+    description: {
+      fontSize: string;
+      fontWeight: string;
+    };
+  }>(FONT_PREVIEW_DATA.medium);
 
   const [pages, setPages] = useState([
     { name: 'Gym', href: '/gym' },
@@ -125,7 +143,7 @@ const PerformActionsOnGym = ({ params }) => {
   });
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const { errors, isValid } = adminGymAddEditValidation(form);
     if (isValid) {
@@ -139,7 +157,7 @@ const PerformActionsOnGym = ({ params }) => {
         about_us: form.about_us,
         contact_us: form.contact_us,
         theme: form.theme,
-        default_workout_count: parseInt(form.default_workout_count),
+        default_workout_count: parseInt(form.default_workout_count.toString()),
         status: `${form.status}`,
         workout_font_style: selectedWorkoutMenu.key || form.workoutFontStyle,
         section_font_style: selectedSectionMenu.key || form.sectionFontStyle,
@@ -148,7 +166,7 @@ const PerformActionsOnGym = ({ params }) => {
         font_size: selectedSizeMenu.name || form.fontSize,
       };
       try {
-        const addEditGymRes = axios.post('/api/admin/gym', payload);
+        const addEditGymRes: any = axios.post('/api/admin/gym', payload);
         const response = addEditGymRes.data;
         if (response) {
           if (response?.data?.meta?.code === 1) {
@@ -168,28 +186,28 @@ const PerformActionsOnGym = ({ params }) => {
                 .then((resp) => {
                   if (resp?.status === 200) {
                     setLoader(false);
-                    successToast(response?.data?.meta?.message);
+                    SuccessToast(response?.data?.meta?.message);
                     router.push('/gym');
                   }
                 })
                 .catch(() => {
-                  errorToast('Something went wrong');
+                  ErrorToast('Something went wrong');
                 });
             } else {
               setLoader(false);
-              successToast(response?.data?.meta?.message);
+              SuccessToast(response?.data?.meta?.message);
               router.push('/gym');
             }
           } else if (response?.data?.meta?.code === 0) {
             setLoader(false);
-            errorToast(response?.data?.meta?.message);
+            ErrorToast(response?.data?.meta?.message);
           } else {
             setLoader(false);
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         setLoader(false);
-        errorToast(errors);
+        ErrorToast('Something went wrong', error);
       }
     } else {
       setLoader(false);
@@ -197,7 +215,7 @@ const PerformActionsOnGym = ({ params }) => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setError((prevState) => ({
       ...prevState,
       [e.target.name]: '',
@@ -209,7 +227,7 @@ const PerformActionsOnGym = ({ params }) => {
     }));
   };
 
-  const radioHandler = (e) => {
+  const radioHandler = (e: any) => {
     let { name, value } = e.target;
     setForm((prevData) => ({
       ...prevData,
@@ -217,14 +235,14 @@ const PerformActionsOnGym = ({ params }) => {
     }));
   };
 
-  const onSelectFile = (e) => {
+  const onSelectFile = (e: any) => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
       return;
     }
     if (e?.target?.files[0]) {
       if (!e?.target?.files[0].name.match(/\.(jpg|jpeg|png)$/i)) {
-        errorToast(
+        ErrorToast(
           `The specified file ${e?.target?.files[0].name} could not be uploaded. Please upload valid image.`
         );
       } else {
@@ -235,29 +253,29 @@ const PerformActionsOnGym = ({ params }) => {
         return () => URL.revokeObjectURL(objectUrl);
       }
     } else {
-      setPreview(undefined);
+      setPreview('');
     }
   };
 
-  const handleWorkOutMenuChange = (menu) => {
+  const handleWorkOutMenuChange = (menu: any) => {
     if (menu) {
       setWorkoutSelectedMenu(menu);
     }
   };
 
-  const handleSectionMenuChange = (menu) => {
+  const handleSectionMenuChange = (menu: any) => {
     if (menu) {
       setSectionSelectedMenu(menu);
     }
   };
 
-  const handleMovementChange = (menu) => {
+  const handleMovementChange = (menu: any) => {
     if (menu) {
       setMovementSelectedMenu(menu);
     }
   };
 
-  const handleSizeMenuChange = (menu) => {
+  const handleSizeMenuChange = (menu: { name: string }) => {
     if (menu) {
       setSelectedSizeMenu(menu);
       if (menu.name === 'small') {
@@ -279,33 +297,41 @@ const PerformActionsOnGym = ({ params }) => {
     setUserFontSize(FONT_SIZE);
   };
 
-  const editFontList = (data) => {
+  const editFontList = (data: {
+    workout_font_style: string;
+    section_font_style: string;
+    movement_font_style: string;
+    font_size: string;
+  }) => {
     const matchedWorkoutFont = FONT_TYPE.find(
       (font) => font.key === data.workout_font_style
     );
 
-    const prevWorkoutSelectedMenu = FONT_TYPE.filter(
-      (itx) => itx.name === matchedWorkoutFont.name
-    );
-    setWorkoutSelectedMenu(prevWorkoutSelectedMenu[0]);
+    const prevWorkoutSelectedMenu =
+      matchedWorkoutFont &&
+      FONT_TYPE.filter((itx) => itx.name === matchedWorkoutFont.name);
+    prevWorkoutSelectedMenu &&
+      setWorkoutSelectedMenu(prevWorkoutSelectedMenu[0]);
 
     const matchedSectionFont = FONT_TYPE.find(
       (font) => font.key === data.section_font_style
     );
 
-    const prevSectionSelectedMenu = FONT_TYPE.filter(
-      (itx) => itx.name === matchedSectionFont.name
-    );
-    setSectionSelectedMenu(prevSectionSelectedMenu[0]);
+    const prevSectionSelectedMenu =
+      matchedSectionFont &&
+      FONT_TYPE.filter((itx) => itx.name === matchedSectionFont.name);
+    prevSectionSelectedMenu &&
+      setSectionSelectedMenu(prevSectionSelectedMenu[0]);
 
     const matchedMovementFont = FONT_TYPE.find(
       (font) => font.key === data.movement_font_style
     );
 
-    const prevMovementSelectedMenu = FONT_TYPE.filter(
-      (itx) => itx.name === matchedMovementFont.name
-    );
-    setMovementSelectedMenu(prevMovementSelectedMenu[0]);
+    const prevMovementSelectedMenu =
+      matchedMovementFont &&
+      FONT_TYPE.filter((itx) => itx.name === matchedMovementFont.name);
+    prevMovementSelectedMenu &&
+      setMovementSelectedMenu(prevMovementSelectedMenu[0]);
 
     // const newData = FONT_TYPE.slice(1);
     setUserFontType(FONT_TYPE);
@@ -316,27 +342,34 @@ const PerformActionsOnGym = ({ params }) => {
     setSelectedSizeMenu(prevSelectedSizeMenu[0]);
 
     setUserFontSize(FONT_SIZE);
-    setPreviewFontData(FONT_PREVIEW_DATA[data.font_size]);
+    setPreviewFontData(
+      FONT_PREVIEW_DATA[data.font_size as keyof typeof FONT_PREVIEW_DATA]
+    );
   };
 
-  const viewFontList = (data) => {
+  const viewFontList = (data: {
+    workout_font_style: string;
+    section_font_style: string;
+    movement_font_style: string;
+    font_size: string | number;
+  }) => {
     const matchedWorkOutFont = FONT_TYPE.find(
       (font) => font.key === data.workout_font_style
     );
     const defaultWorkoutMenu = [
-      { name: matchedWorkOutFont.name, value: matchedWorkOutFont.name },
+      { name: matchedWorkOutFont?.name, value: matchedWorkOutFont?.name },
     ];
     const matchedSectionFont = FONT_TYPE.find(
       (font) => font.key === data.section_font_style
     );
     const defaultSectionMenu = [
-      { name: matchedSectionFont.name, value: matchedSectionFont.name },
+      { name: matchedSectionFont?.name, value: matchedSectionFont?.name },
     ];
     const matchedMovementFont = FONT_TYPE.find(
       (font) => font.key === data.movement_font_style
     );
     const defaultMovementMenu = [
-      { name: matchedMovementFont.name, value: matchedMovementFont.name },
+      { name: matchedMovementFont?.name, value: matchedMovementFont?.name },
     ];
     setWorkoutSelectedMenu(defaultWorkoutMenu[0]);
     setSectionSelectedMenu(defaultSectionMenu[0]);
@@ -346,10 +379,12 @@ const PerformActionsOnGym = ({ params }) => {
     const defaultSizeMenu = [{ name: data.font_size, value: data.font_size }];
     setSelectedSizeMenu(defaultSizeMenu[0]);
     setUserFontSize(defaultSizeMenu);
-    setPreviewFontData(FONT_PREVIEW_DATA[data.font_size]);
+    setPreviewFontData(
+      FONT_PREVIEW_DATA[data.font_size as keyof typeof FONT_PREVIEW_DATA]
+    );
   };
 
-  const setActionTitle = (action) => {
+  const setActionTitle = (action: string) => {
     switch (action) {
       case 'add':
         return 'Add Gym';
@@ -374,7 +409,7 @@ const PerformActionsOnGym = ({ params }) => {
       ]);
       setIsView(action === 'view');
       try {
-        const getGymIdRes = axios.get(`/api/admin/gym/${params.id}`, true);
+        const getGymIdRes: any = axios.get(`/api/admin/gym/${params.id}`);
         const response = getGymIdRes.data;
         if (response) {
           const singleGymData = response?.data?.data;
@@ -409,17 +444,17 @@ const PerformActionsOnGym = ({ params }) => {
             setLoader(false);
           } else if (response?.code === 401) {
             setLoader(false);
-            errorToast(response?.message);
+            ErrorToast(response?.message);
           } else if (response?.data?.meta?.code === 0) {
             setLoader(false);
-            errorToast(response?.data?.meta?.message);
+            ErrorToast(response?.data?.meta?.message);
           } else {
             setLoader(false);
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         setLoader(false);
-        errorToast(error);
+        ErrorToast(error);
       }
     }
   }, []);
@@ -429,8 +464,11 @@ const PerformActionsOnGym = ({ params }) => {
   }, [action]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (selectRef.current && !selectRef.current.contains(event.target)) {
+    const handleClickOutside = (event: any) => {
+      if (
+        selectRef.current &&
+        (selectRef.current as HTMLElement).contains(event.target)
+      ) {
         setIsColorPickerOpen(false);
       }
     };
@@ -442,7 +480,7 @@ const PerformActionsOnGym = ({ params }) => {
   }, [selectRef]);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: { key: string }) => {
       if (e.key === 'Escape') {
         setIsColorPickerOpen(false);
       }

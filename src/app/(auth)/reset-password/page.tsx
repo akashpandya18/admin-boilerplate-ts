@@ -1,25 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-  errorToast,
-  getLocalStorageItem,
-  successToast,
-} from '@/app/utils/helper';
-import Loader from '@/app/components/common/Loader';
-import CommonInput from '@/app/components/common/Input/CommonInput';
-import resetPasswordValidation from '@/app/validation/resetPasswordValidation';
-import Timer from '@/app/components/common/Timer';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ErrorToast, getLocalStorageItem, SuccessToast } from '@/lib/utils';
+import Loader from '@/components/common/Loader';
+import CommonInput from '@/components/common/Input/CommonInput';
+import resetPasswordValidation from '@/validation/resetPasswordValidation';
+import Timer from '@/components/common/Timer';
 import axios from 'axios';
 import validator from 'validator';
 import { HiChevronLeft, HiArrowPath } from 'react-icons/hi2';
 
 const PasswordReset = () => {
+  const searchParams = useSearchParams();
   const router = useRouter();
 
-  const query = router.query;
-  const email = query?.email;
+  const email = searchParams.get('email');
 
   const [form, setForm] = useState({
     otp: '',
@@ -30,10 +26,10 @@ const PasswordReset = () => {
   const [timeUp, setTimeUp] = useState(false);
 
   timeUp;
-  const [error, setError] = useState({});
+  const [error, setError] = useState<any>({});
 
-  const handleChange = (e) => {
-    setError((prevState) => ({
+  const handleChange = (e: any) => {
+    setError((prevState: any) => ({
       ...prevState,
       [e.target.name]: '',
     }));
@@ -44,7 +40,7 @@ const PasswordReset = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const { errors, isValid } = resetPasswordValidation(form);
     if (isValid) {
@@ -61,11 +57,11 @@ const PasswordReset = () => {
         if (response) {
           if (response?.data?.meta?.code === 1) {
             setLoader(false);
-            successToast(response?.data?.meta?.message);
+            SuccessToast(response?.data?.meta?.message);
             router.push('/login');
           } else if (response?.data?.meta?.code === 0) {
             setLoader(false);
-            errorToast(response?.data?.meta?.message);
+            ErrorToast(response?.data?.meta?.message);
           } else {
             setLoader(false);
           }
@@ -92,11 +88,11 @@ const PasswordReset = () => {
       if (response) {
         if (response?.data?.meta?.code === 3) {
           setLoader(false);
-          successToast(response?.data?.meta?.message);
-          router.push(`/reset-password?email=${form.email}`);
+          SuccessToast(response?.data?.meta?.message);
+          router.push(`/reset-password?email=${email}`);
         } else if (response?.data?.meta?.code === 0) {
           setLoader(false);
-          errorToast(response?.data?.meta?.message);
+          ErrorToast(response?.data?.meta?.message);
         } else {
           setLoader(false);
         }

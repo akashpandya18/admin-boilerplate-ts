@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Breadcrumb from '@/app/components/common/Breadcrumb';
-import { errorToast, successToast } from '@/app/utils/helper';
-import Loader from '@/app/components/common/Loader';
-import Pagination from '@/app/components/common/Pagination';
+import { SetStateAction, useEffect, useState } from 'react';
+import Breadcrumb from '@/components/common/Breadcrumb';
+import { ErrorToast, SuccessToast } from '@/lib/utils';
+import Loader from '@/components/common/Loader';
+import Pagination from '@/components/common/Pagination/Pagination';
 import moment from 'moment';
-import DeletePopup from '@/app/components/common/modals/DeletePopup';
-import LazyLoadImageProp from '@/app/components/common/LazyLoadImage';
+import DeletePopup from '@/components/common/modals/DeletePopup';
+import LazyLoadImageProp from '@/components/common/LazyLoadImage';
 import { HiTrash } from 'react-icons/hi2';
 import NoDataFoundImg from '@/public/assets/images/no-data-found.svg';
 import axios from 'axios';
@@ -19,14 +19,18 @@ const PAGE_SIZE = 15;
 
 function Notification() {
   const [loader, setLoader] = useState(false);
-  const [notificationList, setNotificationList] = useState([]);
+  const [notificationList, setNotificationList] = useState<any[]>([]);
   const [openDeletePopup, setDeletePopup] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [idToDelete, setIdToDelete] = useState('');
-  const [deleteType, setDeleteType] = useState();
+  const [deleteType, setDeleteType] = useState('');
 
-  const handlePagination = async (pageNumber, pageSize, searchKey) => {
+  const handlePagination = async (
+    pageNumber: SetStateAction<number>,
+    pageSize: number,
+    searchKey: string
+  ) => {
     setLoader(true);
 
     try {
@@ -47,18 +51,18 @@ function Notification() {
           setNotificationList([]);
           setTotalCount(0);
           setLoader(false);
-          errorToast(response?.data?.meta?.message);
+          ErrorToast(response?.data?.meta?.message);
         } else {
           setLoader(false);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoader(false);
-      errorToast(error?.response?.data?.message);
+      ErrorToast(error?.response?.data?.message);
     }
   };
 
-  const deleteHandler = (id, type) => {
+  const deleteHandler = (id: SetStateAction<string>, type: string) => {
     setIdToDelete(id);
     setDeleteType(type);
     setDeletePopup(true);
@@ -73,17 +77,17 @@ function Notification() {
       const response = notifRes.data;
       if (response) {
         if (response?.data?.meta?.code === 1) {
-          successToast(response?.data?.meta?.message);
+          SuccessToast(response?.data?.meta?.message);
           handlePagination(1, PAGE_SIZE, '');
           setLoader(false);
           setDeletePopup(false);
         } else {
-          errorToast(response?.data?.meta?.message || 'Something went wrong');
+          ErrorToast(response?.data?.meta?.message || 'Something went wrong');
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoader(false);
-      errorToast(error?.response?.data?.message);
+      ErrorToast(error?.response?.data?.message);
     }
     setIdToDelete('');
     setDeleteType('');
@@ -101,7 +105,7 @@ function Notification() {
         <div className='mt-3'>
           <div className='text-right'>
             <button
-              onClick={() => deleteHandler('', 2)}
+              onClick={() => deleteHandler('', '2')}
               type='button'
               className='inline-flex justify-center w-full px-6 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 shadow-sm rounded-3xl hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
             >
@@ -162,7 +166,7 @@ function Notification() {
                           </p>
                           <p className='group-hover:block hidden ml-auto text-gray-400 text-[12px]'>
                             <HiTrash
-                              onClick={() => deleteHandler(item?.id, 1)}
+                              onClick={() => deleteHandler(item?.id, '1')}
                               className='text-right ml-auto w-[20px] text-red-500'
                             />
                           </p>
@@ -189,7 +193,7 @@ function Notification() {
                       </p>
                       <p className='md:w-[150px] group-hover:block hidden ml-auto text-gray-400 text-[12px]'>
                         <HiTrash
-                          onClick={() => deleteHandler(item?.id, 1)}
+                          onClick={() => deleteHandler(item?.id, '1')}
                           className='text-right ml-auto w-[20px] text-red-500'
                         />
                       </p>
@@ -219,7 +223,9 @@ function Notification() {
             currentPage={currentPage}
             totalCount={totalCount}
             pageSize={PAGE_SIZE}
-            onPageChange={(page) => handlePagination(page, PAGE_SIZE, '')}
+            onPageChange={(page) =>
+              handlePagination(Number(page), PAGE_SIZE, '')
+            }
           />
         ) : (
           <span />
@@ -229,12 +235,12 @@ function Notification() {
         <DeletePopup
           open={openDeletePopup}
           title={
-            deleteType === 1
+            deleteType === '1'
               ? 'Delete notification'
               : 'Delete all notifications'
           }
           message={`Are you sure you want to delete ${
-            deleteType === 1 ? 'this notification' : 'all notifications'
+            deleteType === '1' ? 'this notification' : 'all notifications'
           }? This action cannot be undone.`}
           setOpen={setDeletePopup}
           setDelete={handleDeletePopup}

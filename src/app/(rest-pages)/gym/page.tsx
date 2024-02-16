@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
 'use client';
 
-import { useEffect, useState } from 'react';
-import Breadcrumb from '@/app/components/common/Breadcrumb';
-import Table from '@/app/components/common/Table';
-import Pagination from '@/app/components/common/Pagination';
-import { errorToast, successToast } from '@/app/utils/helper';
-import SearchInput from '@/app/components/common/Input/SearchInput';
-import SelectMenu from '@/app/components/common/SelectMenu';
-import { PER_PAGE } from '@/app/utils/constants';
+import { SetStateAction, useEffect, useState } from 'react';
+import Breadcrumb from '@/components/common/Breadcrumb';
+import Table from '@/components/common/Table';
+import Pagination from '@/components/common/Pagination/Pagination';
+import { ErrorToast, SuccessToast } from '@/lib/utils';
+import SearchInput from '@/components/common/Input/SearchInput';
+import SelectMenu from '@/components/common/SelectMenu';
+import { PER_PAGE } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
@@ -71,12 +71,12 @@ function Gym() {
   const [selectedPerPage, setSelectedPerPage] = useState(PER_PAGE[0]);
 
   const handlePagination = async (
-    pageN,
-    perPage,
-    query,
-    sortBy,
-    sortType,
-    status
+    pageN: SetStateAction<number>,
+    perPage: number,
+    query: string,
+    sortBy: string,
+    sortType: string,
+    status?: string
   ) => {
     setLoader(true);
     try {
@@ -93,24 +93,24 @@ function Gym() {
           setLoader(false);
         } else if (response?.code === 401) {
           setLoader(false);
-          errorToast(response?.message);
+          ErrorToast(response?.message);
         } else if (response?.data?.meta?.code === 0) {
           setPage(1);
           setGymList([]);
           setTotalCount(0);
           setLoader(false);
-          errorToast(response?.data?.meta?.message);
+          ErrorToast(response?.data?.meta?.message);
         } else {
           setLoader(false);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoader(false);
-      errorToast(error);
+      ErrorToast(error);
     }
   };
 
-  const handleSortBy = (sortByValue) => {
+  const handleSortBy = (sortByValue: string) => {
     setSortBy(sortByValue);
     if (sortByValue === sortBy) {
       let tempSortOrder = sortType === 'ASC' ? 'DESC' : 'ASC';
@@ -146,7 +146,7 @@ function Gym() {
     }
   }, [search]);
 
-  const handlePerPage = (perPage) => {
+  const handlePerPage = (perPage: any) => {
     setSelectedPerPage(perPage);
     handlePagination(1, perPage.value, search, sortBy, sortType);
   };
@@ -160,27 +160,27 @@ function Gym() {
   const refreshTable = () =>
     handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
 
-  const deleteHandler = (id) => {
+  const deleteHandler = (id: any) => {
     setLoader(true);
     setSearch('');
     try {
-      const gymRes = axios.delete(`/api/admin/gym/${id}`);
-      const response = gymRes.data;
+      const gymRes: any = axios.delete(`/api/admin/gym/${id}`);
+      const response = gymRes?.data;
 
       if (response) {
         if (response?.data?.meta?.code === 1) {
           handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
-          successToast(response?.data?.meta?.message);
+          SuccessToast(response?.data?.meta?.message);
         } else if (response?.data?.meta?.code === 0) {
           setLoader(false);
-          errorToast(response?.data?.meta?.message);
+          ErrorToast(response?.data?.meta?.message);
         } else {
           setLoader(false);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoader(false);
-      errorToast(error);
+      ErrorToast(error);
     }
   };
 
@@ -262,11 +262,11 @@ function Gym() {
             data={gymList}
             name={'gym_table'}
             setDeleteId={deleteHandler}
-            bottomBorder={totalCount > selectedPerPage?.value}
+            // bottomBorder={totalCount > selectedPerPage?.value}
             refreshTable={refreshTable}
-            setSortBy={(sort) => handleSortBy(sort)}
+            setSortBy={(sort: string) => handleSortBy(sort)}
             loader={loader}
-            setSearchTerm={(data) => setSearch(data)}
+            setSearchTerm={(data: SetStateAction<string>) => setSearch(data)}
           />
         </div>
       </div>
@@ -278,7 +278,7 @@ function Gym() {
             pageSize={selectedPerPage?.value}
             onPageChange={(page) =>
               handlePagination(
-                page,
+                Number(page),
                 selectedPerPage?.value,
                 search,
                 sortBy,

@@ -2,18 +2,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import UserComponent from '@/app/components/PageComponents/users/UserComps';
-import Loader from '@/app/components/common/Loader';
+import UserComponent from '@/components/PageComponents/UserComps';
+import Loader from '@/components/common/Loader';
 import {
   capitalize,
-  errorToast,
-  successToast,
+  ErrorToast,
+  SuccessToast,
   getLocalStorageItem,
   capitalizeFirstWord,
-} from '@/app/utils/helper';
-import adminAddEditValidation from '@/app/validation/adminAddEditValidation';
+} from '@/lib/utils';
+import adminAddEditValidation from '@/validation/adminAddEditValidation';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 const USER_TYPE = [{ name: 'Select Gym', value: '' }];
 const STATUS = [
@@ -21,24 +21,56 @@ const STATUS = [
   { name: 'Inactive', value: 0 },
 ];
 
-const PerformActionsOnUser = ({ params }) => {
+interface PerformActionsOnUserProps {
+  params: {
+    action: string;
+    id: string;
+  };
+}
+
+const PerformActionsOnUser = ({ params }: PerformActionsOnUserProps) => {
   const action = params.action;
   const router = useRouter();
 
   const userData =
     getLocalStorageItem('userData') &&
-    JSON.parse(getLocalStorageItem('userData'));
+    JSON.parse(getLocalStorageItem('userData') as string);
 
-  const [error, setError] = useState({});
-  const [selectedMenu, setSelectedMenu] = useState({});
-  const [userGymType, setUserGymType] = useState([]);
+  const [error, setError] = useState<{
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    selectedMenu: string;
+  }>({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    selectedMenu: '',
+  });
+  const [selectedMenu, setSelectedMenu] = useState<any>({});
+  const [userGymType, setUserGymType] = useState<any[]>([]);
   const [isView, setIsView] = useState(false);
   const [pages, setPages] = useState([
     { name: 'Users', href: '/users' },
     { name: `${capitalizeFirstWord(action)}`, href: `/users/${action}` },
   ]);
   const [loader, setLoader] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    gym_id: number;
+    status: number;
+    gym: {
+      id: string;
+      name: string;
+      domain_name: string;
+    };
+  }>({
     id: '',
     first_name: '',
     last_name: '',
@@ -53,7 +85,7 @@ const PerformActionsOnUser = ({ params }) => {
     },
   });
 
-  const radioHandler = (e) => {
+  const radioHandler = (e: any) => {
     let { name, value } = e.target;
     setForm((prevData) => ({
       ...prevData,
@@ -61,13 +93,9 @@ const PerformActionsOnUser = ({ params }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const { errors, isValid } = adminAddEditValidation(
-      form,
-      selectedMenu,
-      action
-    );
+    const { errors, isValid } = adminAddEditValidation(form, selectedMenu);
     if (isValid) {
       setLoader(true);
       try {
@@ -87,28 +115,31 @@ const PerformActionsOnUser = ({ params }) => {
         if (response) {
           if (response?.data?.meta?.code === 1) {
             setLoader(false);
-            successToast(response?.data?.meta?.message);
+            SuccessToast(response?.data?.meta?.message);
             router.push({
               pathname: '/users',
               query: { flag: userData?.userType ? 0 : null },
             });
           } else if (response?.data?.meta?.code === 0) {
             setLoader(false);
-            errorToast(response?.data?.meta?.message);
+            ErrorToast(response?.data?.meta?.message);
           } else {
             setLoader(false);
           }
-        } else {
-          setError(errors);
+          setError((prevState) => ({
+            ...prevState,
+            first_name: errors.first_name || '',
+            email: errors.email || '',
+          }));
         }
-      } catch (error) {
+      } catch (error: any) {
         setLoader(false);
-        errorToast(error);
+        ErrorToast(error);
       }
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setError((prevState) => ({
       ...prevState,
       [e.target.name]: '',
@@ -120,11 +151,15 @@ const PerformActionsOnUser = ({ params }) => {
     }));
   };
 
-  const handleMenuChange = (menu) => {
+  const handleMenuChange = (menu: { value: number }) => {
     if (menu) {
       setSelectedMenu(menu);
       const { errors } = adminAddEditValidation(form, menu);
-      setError(errors);
+      setError((prevState) => ({
+        ...prevState,
+        first_name: errors.first_name || '',
+        email: errors.email || '',
+      }));
     }
   };
 
@@ -134,42 +169,42 @@ const PerformActionsOnUser = ({ params }) => {
       const response = await axios.get('/api/admin/gym-list');
       if (response) {
         if (response?.data?.meta?.code === 1) {
-          const updatedArray = response?.data?.data?.map((itx) => {
+          const updatedArray = response?.data?.data?.map((itx: any) => {
             return { name: itx?.name, value: itx?.id };
           });
           setUserGymType(USER_TYPE.concat(updatedArray));
           setLoader(false);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoader(false);
-      errorToast(error);
+      ErrorToast(error);
     }
   };
 
-  const editGymList = async (data) => {
+  const editGymList = async (data: { gym: { name: string } }) => {
     setLoader(true);
     try {
       const response = await axios.get('/api/admin/gym-list');
       if (response) {
         if (response?.data?.meta?.code === 1) {
-          const updatedArray = response?.data?.data?.map((itx) => {
+          const updatedArray = response?.data?.data?.map((itx: any) => {
             return { name: itx?.name, value: itx?.id };
           });
           setUserGymType(updatedArray);
           const prevSelectedMenu = updatedArray.filter(
-            (itx) => itx.name === data.gym.name
+            (itx: any) => itx.name === data.gym.name
           );
           setSelectedMenu(prevSelectedMenu[0]);
           setLoader(false);
         }
       }
-    } catch (error) {
-      errorToast(error);
+    } catch (error: any) {
+      ErrorToast(error);
     }
   };
 
-  const viewGymList = (data) => {
+  const viewGymList = (data: { gym: { name: string; id: any } }) => {
     setLoader(true);
     const defaultMenu = [{ name: data.gym.name, value: data.gym.id }];
     setUserGymType(defaultMenu);
@@ -177,7 +212,7 @@ const PerformActionsOnUser = ({ params }) => {
     setLoader(false);
   };
 
-  const setActionTitle = (action) => {
+  const setActionTitle = (action: string) => {
     switch (action) {
       case 'add':
         return 'Add User';
@@ -203,7 +238,9 @@ const PerformActionsOnUser = ({ params }) => {
       setIsView(action === 'view');
       try {
         const getUserById = async () => {
-          const response = await axios.get(`/api/admin/users/${params.id}`);
+          const response: any = await axios.get(
+            `/api/admin/users/${params.id}`
+          );
           if (response) {
             const singleUserData = response?.data?.data;
             if (response?.data?.meta?.code === 1) {
@@ -212,6 +249,8 @@ const PerformActionsOnUser = ({ params }) => {
                 first_name: singleUserData.first_name || '',
                 last_name: singleUserData.last_name || '',
                 email: singleUserData.email || '',
+                password: '',
+                gym_id: 0,
                 status: parseInt(singleUserData.status),
                 gym: {
                   id: singleUserData.gym.id || '',
@@ -228,19 +267,19 @@ const PerformActionsOnUser = ({ params }) => {
               }
             } else if (response?.code === 401) {
               setLoader(false);
-              errorToast(response?.message);
+              ErrorToast(response?.message);
             } else if (response?.data?.meta?.code === 0) {
               setLoader(false);
-              errorToast(response?.data?.meta?.message);
+              ErrorToast(response?.data?.meta?.message);
             } else {
               setLoader(false);
             }
           }
         };
         getUserById();
-      } catch (error) {
+      } catch (error: any) {
         setLoader(false);
-        errorToast(error);
+        ErrorToast(error);
       }
     }
   }, []);
