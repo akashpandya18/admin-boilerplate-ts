@@ -3,7 +3,15 @@
 import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
-export default function LazyLoadImageProp({ imageSrc, className }) {
+interface LazyLoadImagePropProps {
+  imageSrc: string;
+  className?: string;
+}
+
+export default function LazyLoadImageProp({
+  imageSrc,
+  className,
+}: LazyLoadImagePropProps) {
   return (
     <div>
       <LazyLoadImage

@@ -1,10 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Switch } from '@headlessui/react';
-import { classNames } from '@/app/utils/helper';
+import { Switch } from '@/components/ui/switch';
+import { classNames } from '@/lib/utils';
 
-const ToggleSwitch = ({ setToggleValue, toggleValue, disabled }) => {
+interface ToggleSwitchProps {
+  setToggleValue: any;
+  toggleValue: boolean;
+  disabled: boolean;
+}
+
+const ToggleSwitch = ({
+  setToggleValue,
+  toggleValue,
+  disabled,
+}: ToggleSwitchProps) => {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {

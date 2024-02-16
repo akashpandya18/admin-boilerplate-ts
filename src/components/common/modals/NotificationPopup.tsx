@@ -3,8 +3,13 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
-const NotificationPopup = ({ notificationData }) => {
+interface NotificationPopupProps {
+  notificationData: any;
+}
+
+const NotificationPopup = ({ notificationData }: NotificationPopupProps) => {
   const router = useRouter();
   const [show, setShow] = useState(false);
 
@@ -52,15 +57,16 @@ const NotificationPopup = ({ notificationData }) => {
                 </div>
               </div>
               <div className='flex border-l border-gray-200'>
-                <button
+                <Button
                   type='button'
+                  variant={'outline'}
                   className='flex items-center justify-center w-full p-4 text-sm font-medium text-gray-600 border border-transparent rounded-none rounded-r-lg hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500'
                   onClick={() => {
                     setShow(false);
                   }}
                 >
                   Close
-                </button>
+                </Button>
               </div>
             </div>
           </Transition>

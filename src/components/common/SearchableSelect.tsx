@@ -1,17 +1,29 @@
 'use client';
 
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
 import { Transition } from '@headlessui/react';
-import { useOutsideClick } from '@/app/utils/helper';
+import { useOutsideClick } from '@/lib/utils';
 import { HiXCircle } from 'react-icons/hi2';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
 
-const SearchableSelect = ({ setSelectedList, label, error }) => {
-  const wrapperRef = useRef(null);
+interface SearchableSelectProps {
+  setSelectedList: any;
+  label: string;
+  error: string;
+}
+
+const SearchableSelect = ({
+  setSelectedList,
+  label,
+  error,
+}: SearchableSelectProps) => {
+  const wrapperRef = useRef<any>(null);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [loader, setLoader] = useState(false);
   const [errorMessage, setError] = useState('');
-  const [dropDownData, setDropDownData] = useState([]);
-  const [arr, setArr] = useState([]);
+  const [dropDownData, setDropDownData] = useState<any[]>([]);
+  const [arr, setArr] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   // const [page, setPage] = useState(1);
   // const [limit, setLimit] = useState(20);
@@ -21,7 +33,7 @@ const SearchableSelect = ({ setSelectedList, label, error }) => {
   }, [error]);
 
   // eslint-disable-next-line no-unused-vars
-  const handleAPICall = (searchKey) => {
+  const handleAPICall = (searchKey: string) => {
     //  use new app/api call here
     // Api.getUserEmailList('users-email-list', page, limit, searchKey).then(
     //   (response) => {
@@ -64,7 +76,7 @@ const SearchableSelect = ({ setSelectedList, label, error }) => {
     }
   }, [searchTerm]);
 
-  const handleCheckbox = (e, item) => {
+  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, item: any) => {
     if (e?.target?.checked) {
       dropDownData?.map((data) => {
         if (data.id === item.id) {
@@ -94,7 +106,7 @@ const SearchableSelect = ({ setSelectedList, label, error }) => {
     }
   };
 
-  const deleteCapsule = (item) => {
+  const deleteCapsule = (item: any) => {
     let tempArr = [{ name: item.name, id: item?.id, checked: false }];
     let filterData = dropDownData.map(
       (obj) => tempArr.find((o) => o.id === obj.id) || obj
@@ -111,13 +123,13 @@ const SearchableSelect = ({ setSelectedList, label, error }) => {
   return (
     <div>
       <div className='relative' ref={wrapperRef}>
-        <label
+        <Label
           htmlFor='searchTerm'
           className='block text-sm font-medium text-gray-700'
         >
           {label} <span className='text-red-400'>&#42;</span>
-        </label>
-        <input
+        </Label>
+        <Input
           type='text'
           name='searchTerm'
           id='searchTerm'
@@ -154,7 +166,7 @@ const SearchableSelect = ({ setSelectedList, label, error }) => {
                         key={index}
                       >
                         <div className='flex items-center h-5'>
-                          <input
+                          <Input
                             id={item.name}
                             name='comments'
                             checked={item?.checked}
@@ -164,12 +176,12 @@ const SearchableSelect = ({ setSelectedList, label, error }) => {
                           />
                         </div>
                         <div className='ml-3 text-sm cursor-pointer'>
-                          <label
+                          <Label
                             htmlFor={item.name}
                             className='font-medium text-gray-700'
                           >
                             {item.name}
-                          </label>
+                          </Label>
                         </div>
                       </div>
                     );

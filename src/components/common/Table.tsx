@@ -3,16 +3,14 @@
 
 import React, { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import {
-  errorToast,
+  ErrorToast,
   getAccountType,
   getContentType,
-  getFocusType,
-  getMeditationType,
   getSentToUser,
   getUserType,
-  successToast,
-} from '@/app/utils/helper';
-import { useRouter } from 'next/navigation';
+  SuccessToast,
+} from '@/lib/utils';
+import { useRouter } from 'next/router';
 import {
   HiOutlinePencilSquare,
   HiOutlineTrash,
@@ -24,20 +22,41 @@ import {
 } from 'react-icons/hi2';
 import NoDataFoundImg from '/public/assets/images/no-data-found.svg';
 import moment from 'moment';
-import AudioPlayer from '../AudioPlayer/AudioPlayer';
+import AudioPlayer from './AudioPlayer/AudioPlayer';
 import VideoPlayer from './modals/VideoPlayer';
 import BulkOperationPopup from './modals/BulkOperationPopup';
 import ConfirmPopup from './modals/ConfirmPopup';
 import ActiveInactiveToggle from './ActiveInactiveToggle';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
-import { CONTENT_APPROVAL_TYPE } from '../../utils/constants';
+import { CONTENT_APPROVAL_TYPE } from '@/lib/constants';
 import { Listbox, Transition } from '@headlessui/react';
 import Loader from './Loader';
 import LazyLoadImageProp from './LazyLoadImage';
 import FocusPopup from './modals/FocusPopup';
 import Image from 'next/image';
 import DeletePopup from './modals/DeletePopup';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+
+interface TableProps {
+  columns: any;
+  data: any;
+  setDeleteId: any;
+  setSelectedRow: any;
+  name: string;
+  setSortBy: any;
+  refreshTable: any;
+  loader: boolean;
+  setSearchTerm: any;
+  message: string;
+  contentType?: string;
+}
 
 const Table = ({
   columns,
@@ -51,11 +70,11 @@ const Table = ({
   setSearchTerm,
   message,
   // contentType,
-}) => {
-  const checkbox = useRef({ indeterminate: false });
+}: TableProps) => {
+  const checkbox = useRef<any>({ indeterminate: false });
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
-  const [selectedData, setSelectedData] = useState([]);
+  const [selectedData, setSelectedData] = useState<any[]>([]);
   const [selectedRowOfTable, setSelectedRowOfTable] = useState(null);
 
   useLayoutEffect(() => {
@@ -70,7 +89,7 @@ const Table = ({
 
   function toggleAll() {
     setSelectedData(
-      checked || indeterminate ? [] : data?.map((temp) => temp.id)
+      checked || indeterminate ? [] : data?.map((temp: { id: any }) => temp.id)
     );
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
@@ -81,25 +100,25 @@ const Table = ({
   const [openConfirmPopup, setOpenConfirmPopup] = useState(false);
   const [openVideoPlayer, setVideoPlayer] = useState(false);
   const [idToDelete, setIdToDelete] = useState('');
-  const [activePlaying, setActivePlaying] = useState(null);
+  const [activePlaying, setActivePlaying] = useState<any>(null);
   const [actionType, setActionType] = useState('');
   const [open, setOpen] = React.useState(false);
   const [openFocusPopup, setOpenFocusPopup] = useState(false);
-  const [focusData, setFocusData] = useState([]);
+  const [focusData, setFocusData] = useState<any[]>([]);
 
   const router = useRouter();
 
-  const deleteHandler = (id) => {
+  const deleteHandler = (id: React.SetStateAction<string>) => {
     setIdToDelete(id);
     setDeletePopup(true);
   };
 
-  const bulkOperationHandler = (actionType) => {
+  const bulkOperationHandler = (actionType: React.SetStateAction<string>) => {
     setActionType(actionType);
     setBulkOperationPopup(true);
   };
 
-  const activePlayerHandler = (id) => {
+  const activePlayerHandler = (id: React.SetStateAction<string>) => {
     setActivePlaying(id);
   };
 
@@ -107,17 +126,24 @@ const Table = ({
     setActivePlaying(null);
   };
 
-  const focusPopUpHandler = (data) => {
+  const focusPopUpHandler = (data: React.SetStateAction<any[]>) => {
     setFocusData([]);
     setOpenFocusPopup(true);
     setFocusData(data);
   };
 
-  const formattedData = (rowData, data, type, column) => {
-    const handleOldNew = (data) => {
+  const formattedData = (rowData: any, data: any, type: any, column: any) => {
+    const handleOldNew = (data: any) => {
+      const pathname = column.isTwoOption;
+      const option = data?.value == 1 ? 1 : 2;
+
       router.push({
-        pathname: column.isTwoOption,
-        state: { ...rowData, action: 'view', option: data?.value == 1 ? 1 : 2 },
+        pathname: pathname,
+        query: {
+          ...rowData,
+          action: 'view',
+          option: option,
+        },
       });
     };
 
@@ -141,12 +167,8 @@ const Table = ({
       return (
         <div>{data === 0 ? 'Draft' : data === 1 ? 'Approved' : 'Rejected'}</div>
       );
-    } else if (type === 'focusType') {
-      return getFocusType(data);
     } else if (type === 'accountType') {
       return getAccountType(data);
-    } else if (type === 'meditationType') {
-      return getMeditationType(data);
     } else if (type === 'sentToUser') {
       return getSentToUser(data);
     } else if (type === 'profile') {
@@ -182,8 +204,12 @@ const Table = ({
             <HiOutlinePencilSquare
               className='w-[20px] ml-2 text-admin-secondary cursor-pointer'
               onClick={() =>
-                router.push(column.isEdit, {
-                  state: { ...rowData, action: 'edit' },
+                router.push({
+                  pathname: column.isEdit,
+                  query: {
+                    ...rowData,
+                    action: 'edit',
+                  },
                 })
               }
             />
@@ -192,8 +218,9 @@ const Table = ({
             <HiOutlineEye
               className='w-[20px] ml-2 text-admin-secondary cursor-pointer'
               onClick={() =>
-                router.push(column.isView, {
-                  state: { ...rowData, action: 'view' },
+                router.push({
+                  pathname: column.isView,
+                  query: { ...rowData, action: 'view' },
                 })
               }
             />
@@ -222,7 +249,7 @@ const Table = ({
                                 <Listbox.Option
                                   key={index}
                                   className='relative py-2 pl-3 text-gray-900 cursor-default pr-9 hover:text-white hover:bg-admin-primary'
-                                  disabled={menu?.value === ''}
+                                  disabled={!menu?.value}
                                   value={menu}
                                 >
                                   <span className='font-normal cursor-pointer'>
@@ -242,8 +269,9 @@ const Table = ({
               <HiOutlineEye
                 className='w-[20px] ml-2 text-admin-secondary cursor-pointer'
                 onClick={() =>
-                  router.push(column.isTwoOption, {
-                    state: { ...rowData, action: 'view' },
+                  router.push({
+                    pathname: column.isView,
+                    query: { ...rowData, action: 'view' },
                   })
                 }
               />
@@ -277,19 +305,14 @@ const Table = ({
             >
               {data}
               {data.length >= 45 && (
-                <ReactTooltip
-                  anchorId={column.key + rowData.id}
-                  place='right'
-                  style={{
-                    width: '350px',
-                    whiteSpace: 'normal',
-                    wordBreak: 'break-word',
-                    textAlign: 'center',
-                    maxHeight: '250px',
-                    overflowY: 'hidden',
-                  }}
-                  content={data}
-                />
+                <Tooltip>
+                  <TooltipTrigger id={`${column.key}${rowData.id}`}>
+                    Trigger Element
+                  </TooltipTrigger>
+                  <TooltipContent className='w-[350px] whitespace-normal break-all text-center max-h-[250px] overflow-y-hidden'>
+                    {data}
+                  </TooltipContent>
+                </Tooltip>
               )}
             </p>
           ) : (
@@ -312,7 +335,7 @@ const Table = ({
       const array = data.slice(0, 2);
       return (
         <div>
-          {array?.map((value, key) => (
+          {array?.map((value: any, key: number) => (
             <div key={key}>
               {key === array.length - 1
                 ? value?.display_name
@@ -364,6 +387,21 @@ const Table = ({
         </p>
       );
     } else if (type === 'platform' || type === 'purchase_platform') {
+      const anchorId =
+        type === 'purchase_platform' ? rowData.transactionId : rowData.id;
+      const content =
+        data === 0
+          ? 'admin'
+          : data === 1 && type === 'purchase_platform'
+            ? 'Google'
+            : data === 1 && type === 'platform'
+              ? 'Apple'
+              : data === 2 && type === 'purchase_platform'
+                ? 'Apple'
+                : data === 2 && type === 'platform'
+                  ? 'Google'
+                  : 'Facebook';
+
       return (
         <div className='relative flex justify-center w-full'>
           {
@@ -390,26 +428,12 @@ const Table = ({
               }
             />
           }
-          <ReactTooltip
-            anchorId={
-              type === 'purchase_platform' ? rowData.transactionId : rowData.id
-            }
-            place='left'
-            content={
-              data === 0
-                ? 'admin'
-                : data === 1 && type === 'purchase_platform'
-                  ? 'Google'
-                  : data === 1 && type === 'platform'
-                    ? 'Apple'
-                    : data === 2 && type === 'purchase_platform'
-                      ? 'Apple'
-                      : data === 2 && type === 'platform'
-                        ? 'Google'
-                        : 'Facebook'
-            }
-            className='bg-admin-secondary'
-          />
+          <Tooltip>
+            <TooltipTrigger id={anchorId}>Trigger Element</TooltipTrigger>
+            <TooltipContent className='bg-admin-secondary'>
+              {content}
+            </TooltipContent>
+          </Tooltip>
         </div>
       );
     } else if (type === 'badge-domain') {
@@ -523,7 +547,7 @@ const Table = ({
     }
   };
 
-  const handleResendNotification = (e, row) => {
+  const handleResendNotification = (e: any, row: any) => {
     e.preventDefault();
     setSelectedRow(row);
   };
@@ -539,7 +563,7 @@ const Table = ({
               <table className='min-w-full divide-y divide-[#EAEAEA]'>
                 <thead className='bg-admin-tableHeader'>
                   <tr>
-                    {columns?.map((column, index) => {
+                    {columns?.map((column: any, index: number) => {
                       return (
                         <Fragment key={index}>
                           {column.type === 'checkBox' ? (
@@ -547,12 +571,12 @@ const Table = ({
                               scope='col'
                               className='relative w-12 px-6 sm:w-16 sm:px-8'
                             >
-                              <input
+                              <Input
+                                ref={checkbox}
                                 type='checkbox'
                                 className={`${
                                   data.length != 0 && 'cursor-pointer'
                                 } absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 accent-admin-primary sm:left-6`}
-                                ref={checkbox}
                                 checked={checked}
                                 onChange={toggleAll}
                                 disabled={data.length == 0}
@@ -564,28 +588,31 @@ const Table = ({
                                 >
                                   {(name === 'users_table' ||
                                     name === 'gym_table') && (
-                                    <button
-                                      onClick={() => bulkOperationHandler(2)}
+                                    <Button
+                                      onClick={() => bulkOperationHandler('2')}
                                       type='button'
+                                      variant={'destructive'}
                                       className='inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-30'
                                     >
                                       Delete
-                                    </button>
+                                    </Button>
                                   )}
-                                  <button
-                                    onClick={() => bulkOperationHandler(1)}
+                                  <Button
+                                    onClick={() => bulkOperationHandler('1')}
                                     type='button'
+                                    variant={'default'}
                                     className='inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-30'
                                   >
                                     Active
-                                  </button>
-                                  <button
-                                    onClick={() => bulkOperationHandler(0)}
+                                  </Button>
+                                  <Button
+                                    onClick={() => bulkOperationHandler('0')}
                                     type='button'
+                                    variant={'secondary'}
                                     className='inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-30'
                                   >
                                     Inactive
-                                  </button>
+                                  </Button>
                                 </div>
                               )}
                             </th>
@@ -651,10 +678,10 @@ const Table = ({
                   ) : (
                     <>
                       {data?.length > 0 ? (
-                        data?.map((data, index) => {
+                        data?.map((data: any, index: number) => {
                           return (
                             <tr key={index}>
-                              {columns?.map((column, index1) => {
+                              {columns?.map((column: any, index1: number) => {
                                 return (
                                   <Fragment key={index1}>
                                     {column.type === 'checkBox' ? (
@@ -662,7 +689,7 @@ const Table = ({
                                         {selectedData.includes(data.id) && (
                                           <div className='absolute inset-y-0 left-0 w-0.5 bg-admin-primary' />
                                         )}
-                                        <input
+                                        <Input
                                           type='checkbox'
                                           className='absolute w-4 h-4 -mt-2 border-gray-300 rounded cursor-pointer left-4 top-1/2 accent-admin-primary sm:left-6'
                                           value={data.id}
@@ -759,7 +786,7 @@ const Table = ({
           open={bulkOperationPopup}
           setOpen={setBulkOperationPopup}
           setDelete={handleBulkOperation}
-          actionType={actionType}
+          actionType={Number(actionType)}
         />
       )}
       <FocusPopup

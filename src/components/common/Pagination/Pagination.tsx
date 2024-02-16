@@ -1,9 +1,17 @@
 'use client';
 
-import { DOTS, usePagination } from '@/app/hooks/usePagination';
+import { DOTS, usePagination } from '@/hooks/usePagination';
 import { HiArrowLeft, HiArrowRight } from 'react-icons/hi2';
 
-const Pagination = (props) => {
+interface PaginationProps {
+  onPageChange: (page: number | string) => void;
+  totalCount: number;
+  siblingCount?: number;
+  currentPage: number;
+  pageSize: number;
+}
+
+const Pagination = (props: PaginationProps) => {
   const {
     onPageChange,
     totalCount,

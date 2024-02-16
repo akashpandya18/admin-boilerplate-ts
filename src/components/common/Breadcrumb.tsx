@@ -2,11 +2,18 @@
 
 import { HiChevronRight, HiHome } from 'react-icons/hi2';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
-const Breadcrumb = ({ pageList }) => {
-  const router = useRouter();
-  const location = router.location;
+interface BreadcrumbProps {
+  pageList: {
+    name: string;
+    href: string;
+    current?: boolean;
+  }[];
+}
+
+const Breadcrumb = ({ pageList }: BreadcrumbProps) => {
+  const pathname = usePathname();
   return (
     <nav className='flex pb-4 border-b border-gray-200' aria-label='Breadcrumb'>
       <ol role='list' className='flex items-center space-x-4'>
@@ -15,11 +22,7 @@ const Breadcrumb = ({ pageList }) => {
             <Link
               href='/'
               className={`
-                ${
-                  location?.pathname == '/'
-                    ? 'cursor-default'
-                    : 'hover:text-gray-500'
-                }
+                ${pathname == '/' ? 'cursor-default' : 'hover:text-gray-500'}
                 text-gray-400`}
             >
               <HiHome className='flex-shrink-0 w-5 h-5' aria-hidden='true' />
@@ -37,7 +40,7 @@ const Breadcrumb = ({ pageList }) => {
               <Link
                 href={page.href}
                 className={`${
-                  page.href === location?.pathname
+                  page.href === pathname
                     ? 'text-admin-primary cursor-default'
                     : 'text-gray-500 cursor-pointer hover:text-gray-700'
                 } ml-4 text-sm font-medium `}

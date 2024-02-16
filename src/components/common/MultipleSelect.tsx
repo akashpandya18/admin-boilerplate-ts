@@ -1,7 +1,17 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import { HiChevronDown, HiXCircle } from 'react-icons/hi2';
-import { useOutsideClick } from '@/app/utils/helper';
+import { useOutsideClick } from '@/lib/utils';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+
+interface MultipleSelectProps {
+  data: any;
+  label: string;
+  selectedFocus: any;
+  handleSelectedFocusList: any;
+  disabled: boolean;
+}
 
 const MultipleSelect = ({
   data,
@@ -9,20 +19,20 @@ const MultipleSelect = ({
   selectedFocus,
   handleSelectedFocusList,
   disabled,
-}) => {
-  const wrapperRef = useRef(null);
+}: MultipleSelectProps) => {
+  const wrapperRef = useRef<any>(null);
   const [show, setShow] = useState(false);
-  const [arr, setArr] = useState([]);
-  const [dataList, setDataList] = useState([]);
+  const [arr, setArr] = useState<any[]>([]);
+  const [dataList, setDataList] = useState<any[]>([]);
 
   useEffect(() => {
-    let tempArr = [];
+    let tempArr: any[] = [];
     setArr(selectedFocus);
-    data?.map((item) => {
+    data?.map((item: any) => {
       tempArr.push({
         id: item?.id,
         name: item.focusName,
-        checked: selectedFocus?.some((e) => e.id === item.id),
+        checked: selectedFocus?.some((e: any) => e.id === item.id),
       });
     });
     setDataList(tempArr);
@@ -32,7 +42,7 @@ const MultipleSelect = ({
     handleSelectedFocusList(arr);
   }, [arr]);
 
-  const handleCheckbox = (e, item) => {
+  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, item: any) => {
     if (e?.target?.checked) {
       dataList?.map((data) => {
         if (data.id === item.id) {
@@ -62,7 +72,7 @@ const MultipleSelect = ({
     }
   };
 
-  const deleteCapsule = (item) => {
+  const deleteCapsule = (item: any) => {
     let tempArr = [{ name: item.name, id: item?.id, checked: false }];
     let filterData = dataList.map(
       (obj) => tempArr.find((o) => o.id === obj.id) || obj
@@ -78,13 +88,13 @@ const MultipleSelect = ({
 
   return (
     <div className={!disabled ? 'cursor-pointer' : 'cursor-default'}>
-      <label
+      <Label
         htmlFor='meditationName'
         className='block text-sm font-medium text-gray-700'
       >
         {disabled ? 'Focus' : label}{' '}
         {!disabled && <span className='text-red-400'>&#42;</span>}
-      </label>
+      </Label>
 
       {!disabled && (
         <div
@@ -125,7 +135,7 @@ const MultipleSelect = ({
                           key={index}
                         >
                           <div className='flex items-center h-5'>
-                            <input
+                            <Input
                               id={item.name}
                               name='comments'
                               checked={item?.checked}

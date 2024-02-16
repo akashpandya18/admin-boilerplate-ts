@@ -18,8 +18,6 @@ interface VideoPlayerProps {
 }
 
 function VideoPlayer({ open, setOpen }: VideoPlayerProps) {
-  const cancelButtonRef = useRef(null);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className='sm:max-w-5xl'>

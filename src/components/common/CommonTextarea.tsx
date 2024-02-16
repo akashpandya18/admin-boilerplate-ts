@@ -1,6 +1,20 @@
 'use client';
 
-import { MaxCharlimitLongText } from '@/app/utils/helper';
+import { MaxCharlimitLongText } from '@/lib/utils';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+interface CommonTextareaProps {
+  id: string;
+  name: string;
+  value: string;
+  label: string;
+  error: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  rows: number;
+  isRequired: boolean;
+  disabled: boolean;
+  isLengthValidate: boolean;
+}
 
 const CommonTextarea = ({
   id,
@@ -13,10 +27,10 @@ const CommonTextarea = ({
   isRequired,
   disabled,
   isLengthValidate,
-}) => {
+}: CommonTextareaProps) => {
   return (
     <div>
-      <label htmlFor={id} className='block text-sm font-medium text-gray-700'>
+      <Label htmlFor={id} className='block text-sm font-medium text-gray-700'>
         {label}{' '}
         {isRequired && !disabled && <span className='text-red-400'>&#42;</span>}
         {isLengthValidate && !disabled && (
@@ -26,9 +40,9 @@ const CommonTextarea = ({
               : 'Out Of Character Limit 100'}
           </span>
         )}
-      </label>
+      </Label>
       <div className='mt-1'>
-        <textarea
+        <Textarea
           id={id}
           name={name}
           value={value}

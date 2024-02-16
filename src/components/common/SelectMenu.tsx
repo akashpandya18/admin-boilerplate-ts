@@ -3,7 +3,18 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { HiCheck, HiChevronUpDown } from 'react-icons/hi2';
-import { classNames } from '@/app/utils/helper';
+import { classNames } from '@/lib/utils';
+
+interface SelectMenuProps {
+  menuList: any;
+  label: string;
+  setSelectedMenu: any;
+  defaultSelected: any;
+  disabled?: boolean;
+  isRequired?: boolean;
+  showLabel?: boolean;
+  customClassFlag?: boolean;
+}
 
 const SelectMenu = ({
   menuList,
@@ -14,10 +25,10 @@ const SelectMenu = ({
   isRequired = true,
   showLabel = true,
   customClassFlag,
-}) => {
-  const [selected, setSelected] = useState(menuList[0]);
+}: SelectMenuProps) => {
+  const [selected, setSelected] = useState<any>(menuList[0]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setSelected(e);
     setSelectedMenu(e);
   };
@@ -76,7 +87,7 @@ const SelectMenu = ({
               leaveTo='opacity-0'
             >
               <Listbox.Options className='absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-                {menuList.map((menu, index) => (
+                {menuList.map((menu: any, index: number) => (
                   <Listbox.Option
                     key={index}
                     className={({ active }) =>

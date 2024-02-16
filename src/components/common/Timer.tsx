@@ -1,12 +1,16 @@
 'use client';
 import { useState, useEffect } from 'react';
 
-export default function Timer({ setTimeUp }) {
+interface TimerProps {
+  setTimeUp: any;
+}
+
+export default function Timer({ setTimeUp }: TimerProps) {
   const [countDown, setCountDown] = useState(0);
   const [runTimer, setRunTimer] = useState(true);
 
   useEffect(() => {
-    let timerId;
+    let timerId: any;
     if (runTimer) {
       setCountDown(30);
       timerId = setInterval(() => {
@@ -27,8 +31,8 @@ export default function Timer({ setTimeUp }) {
     }
   }, [countDown, runTimer]);
 
-  const seconds = String(countDown % 60).padStart(2, 0);
-  const minutes = String(Math.floor(countDown / 60)).padStart(2, 0);
+  const seconds = String(countDown % 60).padStart(2, '0');
+  const minutes = String(Math.floor(countDown / 60)).padStart(2, '0');
   return (
     <div
       className={

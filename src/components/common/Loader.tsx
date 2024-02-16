@@ -1,6 +1,6 @@
 'use client';
 
-import { useSidebarStore } from '@/app/store/sidebarStore';
+import { useSidebarStore } from '@/store/sidebarStore';
 import { usePathname } from 'next/navigation';
 
 const Loader = () => {

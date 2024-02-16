@@ -3,7 +3,7 @@
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi2';
 import Link from 'next/link';
 
-const Pagination = () => {
+const PaginationExample = () => {
   return (
     <div className='flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6'>
       <div className='flex justify-between flex-1 sm:hidden'>
@@ -95,4 +95,4 @@ const Pagination = () => {
   );
 };
 
-export default Pagination;
+export default PaginationExample;

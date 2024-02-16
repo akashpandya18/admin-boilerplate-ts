@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 
-const HoverableGifIcon = ({ staticSrc, gifSrc, alt, classN }) => {
+interface HoverableGifIconProps {
+  staticSrc: string;
+  gifSrc: string;
+  alt: string;
+  classN: string;
+}
+
+const HoverableGifIcon = ({
+  staticSrc,
+  gifSrc,
+  alt,
+  classN,
+}: HoverableGifIconProps) => {
   const [src, setSrc] = useState(staticSrc);
 
   return (

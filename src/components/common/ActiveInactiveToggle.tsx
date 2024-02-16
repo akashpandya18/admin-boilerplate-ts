@@ -1,11 +1,20 @@
 'use client';
 
-import { Switch } from '@headlessui/react';
+// import { Switch } from '@headlessui/react';
+import { Switch } from '@/components/ui/switch';
 import React, { useState, useEffect } from 'react';
-import { classNames } from '@/app/utils/helper';
+import { classNames } from '@/lib/utils';
 import ConfirmPopup from './modals/ConfirmPopup';
 
-export default function ActiveInactiveToggle({ accountStatus, userId }) {
+interface ActiveInactiveToggleProps {
+  accountStatus: boolean;
+  userId: string;
+}
+
+export default function ActiveInactiveToggle({
+  accountStatus,
+  userId,
+}: ActiveInactiveToggleProps) {
   const [openConfirmPopup, setOpenConfirmPopup] = useState(false);
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
@@ -17,7 +26,7 @@ export default function ActiveInactiveToggle({ accountStatus, userId }) {
   const handlePopUp = () => {
     setOpenConfirmPopup(true);
   };
-  const handleStatus = (e) => {
+  const handleStatus = (e: any) => {
     e.preventDefault();
     // eslint-disable-next-line no-unused-vars
     const payload = {
