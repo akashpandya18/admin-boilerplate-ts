@@ -9,7 +9,7 @@ import moment from 'moment';
 import DeletePopup from '@/components/common/modals/DeletePopup';
 import LazyLoadImageProp from '@/components/common/LazyLoadImage';
 import { HiTrash } from 'react-icons/hi2';
-import NoDataFoundImg from '@/public/assets/images/no-data-found.svg';
+import NoDataFoundImg from '@/assets/images/no-data-found.svg';
 import axios from 'axios';
 
 const pages = [

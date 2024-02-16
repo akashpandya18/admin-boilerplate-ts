@@ -34,7 +34,7 @@ const Pagination = (props: PaginationProps) => {
   const onPrevious = () => {
     onPageChange(currentPage - 1);
   };
-  let lastPage = paginationRange[paginationRange.length - 1];
+  const lastPage = paginationRange[paginationRange.length - 1];
 
   return (
     <div className='px-4 py-4 bg-white border-r border-l border-b border-gray-200 rounded-b-[15px]'>

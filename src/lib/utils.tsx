@@ -25,9 +25,9 @@ import {
   PiGenderIntersexBold as InterSex,
 } from 'react-icons/pi';
 
-export const cn = (...inputs: ClassValue[]) => {
+export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-};
+}
 export const MaxCharlimit = 100;
 export const MaxCharlimitLongText = 1000;
 export const getLocalStorageItem = (key: string) => {
@@ -206,7 +206,7 @@ export const useOutsideClick = (
 };
 
 export const capitalize = (value: string) => {
-  let lowerCase = value?.toLowerCase();
+  const lowerCase = value?.toLowerCase();
   return lowerCase.replace(/(^\w{1})|(\s+\w{1})/g, (letter: string) =>
     letter.toUpperCase()
   );
@@ -215,8 +215,8 @@ export const capitalize = (value: string) => {
 export const getFilterKey = (value: {
   match: (arg0: RegExp) => string | any[];
 }) => {
-  let key = value?.match(/([A-Z]?[^A-Z]*)/g).slice(0, -1);
-  let returnKey = key?.toString()?.replaceAll(',', ' ');
+  const key = value?.match(/([A-Z]?[^A-Z]*)/g).slice(0, -1);
+  const returnKey = key?.toString()?.replaceAll(',', ' ');
   return capitalize(returnKey);
 };
 
@@ -354,3 +354,65 @@ export const truncateParagraph = (paragraph: string, numWords: number) => {
 
   return truncatedText;
 };
+
+export const FONT_TYPE = [
+  // { name: 'Select Font', key: '' },
+  { name: 'Roboto', key: 'roboto_sans' },
+  { name: 'Montserrat', key: 'montserrat' },
+  { name: 'Roboto Mono', key: 'roboto_mono' },
+  { name: 'Outfit', key: 'outfit' },
+  { name: 'Fira Code', key: 'fira_code' },
+];
+export const FONT_SIZE = [
+  { name: 'small' },
+  { name: 'medium' },
+  { name: 'large' },
+];
+export const FONT_PREVIEW_DATA = {
+  small: {
+    header: {
+      fontSize: 'text-[44px]',
+      fontWeight: 'font-bold',
+    },
+    subheader: {
+      fontSize: 'text-[30px]',
+      fontWeight: 'font-semibold',
+    },
+    description: {
+      fontSize: 'text-[16px]',
+      fontWeight: 'font-normal',
+    },
+  },
+  medium: {
+    header: {
+      fontSize: 'text-[56px]',
+      fontWeight: 'font-bold',
+    },
+    subheader: {
+      fontSize: 'text-[36px]',
+      fontWeight: 'font-semibold',
+    },
+    description: {
+      fontSize: 'text-[20px]',
+      fontWeight: 'font-normal',
+    },
+  },
+  large: {
+    header: {
+      fontSize: 'text-[72px]',
+      fontWeight: 'font-bold',
+    },
+    subheader: {
+      fontSize: 'text-[48px]',
+      fontWeight: 'font-semibold',
+    },
+    description: {
+      fontSize: 'text-[24px]',
+      fontWeight: 'font-normal',
+    },
+  },
+};
+export const STATUS = [
+  { name: 'Active', value: 1 },
+  { name: 'Inactive', value: 0 },
+];

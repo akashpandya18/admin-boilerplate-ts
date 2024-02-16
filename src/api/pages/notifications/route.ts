@@ -69,12 +69,10 @@ export async function DELETE(req: NextApiRequest, res: NextApiResponse) {
     if (axios.isAxiosError(error) && error.response) {
       res.status(error.response.status).json(error.response.data);
     } else {
-      res
-        .status(500)
-        .json({
-          message: 'Error deleting notifications',
-          error: error.message,
-        });
+      res.status(500).json({
+        message: 'Error deleting notifications',
+        error: error.message,
+      });
     }
   }
 }

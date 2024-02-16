@@ -3,12 +3,12 @@
 
 import React, { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import {
-  ErrorToast,
+  // ErrorToast,
   getAccountType,
   getContentType,
   getSentToUser,
   getUserType,
-  SuccessToast,
+  // SuccessToast,
 } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import {
@@ -20,7 +20,7 @@ import {
   HiClock,
   HiXCircle,
 } from 'react-icons/hi2';
-import NoDataFoundImg from '/public/assets/images/no-data-found.svg';
+import NoDataFoundImg from '@/assets/images/no-data-found.svg';
 import moment from 'moment';
 import AudioPlayer from './AudioPlayer/AudioPlayer';
 import VideoPlayer from './modals/VideoPlayer';
@@ -30,10 +30,8 @@ import ActiveInactiveToggle from './ActiveInactiveToggle';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
 import { CONTENT_APPROVAL_TYPE } from '@/lib/constants';
 import { Listbox, Transition } from '@headlessui/react';
 import Loader from './Loader';
@@ -65,7 +63,7 @@ const Table = ({
   setSelectedRow,
   name,
   setSortBy,
-  refreshTable,
+  // refreshTable,
   loader,
   setSearchTerm,
   message,
@@ -172,7 +170,7 @@ const Table = ({
     } else if (type === 'sentToUser') {
       return getSentToUser(data);
     } else if (type === 'profile') {
-      let name = rowData.name?.split(' ');
+      const name = rowData.name?.split(' ');
       return (
         <div className='flex items-center justify-center text-center'>
           <div className='flex-shrink-0'>

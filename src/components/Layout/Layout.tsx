@@ -30,7 +30,7 @@ const LoadSideBar = () => {
 };
 
 const Layout = ({ children }: props) => {
-  const [unreadNotiCount, setUnreadNotiCount] = useState(0);
+  const [unreadNotiCount] = useState(0);
   const { isShow, setShow } = useSidebarStore();
   const { width } = useWindowDimensions();
 

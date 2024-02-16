@@ -62,7 +62,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const { tag = '/admin/v1/gym', reqBody, isHeader = true, flag } = req.body;
-  let flagCheck = flag
+  const flagCheck = flag
     ? 'multipart/form-data; boundary=----WebKitFormBoundaryueI4YvrqiXxUgVGA'
     : 'application/json';
 

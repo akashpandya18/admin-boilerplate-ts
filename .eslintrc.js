@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ['plugin:react/recommended', 'prettier'],
+  extends: ['prettier'],
   overrides: [
     {
       env: {
@@ -13,6 +13,20 @@ module.exports = {
       parserOptions: {
         sourceType: 'script',
       },
+    },
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      extends: ['prettier', 'plugin:@typescript-eslint/recommended'],
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      rules: { '@typescript-eslint/no-explicit-any': 'warn' },
     },
   ],
   parserOptions: {

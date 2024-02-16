@@ -86,7 +86,7 @@ const PerformActionsOnUser = ({ params }: PerformActionsOnUserProps) => {
   });
 
   const radioHandler = (e: any) => {
-    let { name, value } = e.target;
+    const { name, value } = e.target;
     setForm((prevData) => ({
       ...prevData,
       [name]: parseInt(value),

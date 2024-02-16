@@ -21,7 +21,7 @@ const FormAudioPlayer = ({
     const video = audioEl.current;
     if (!video) return;
     let minutes: string | number = Math.floor(video.duration / 60);
-    let extraSeconds = video.duration % 60;
+    const extraSeconds = video.duration % 60;
     minutes = minutes < 10 ? '0' + minutes : minutes;
     let sec: string | number = parseInt(extraSeconds.toString());
     sec = sec < 10 ? '0' + sec : sec;

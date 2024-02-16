@@ -7,79 +7,21 @@ import Breadcrumb from '@/components/common/Breadcrumb';
 import Loader from '@/components/common/Loader';
 import adminGymAddEditValidation from '@/validation/adminGymAddEditValidation';
 import './fonts.css';
-import LogoIcon from '@/public/assets/images/logo-upload-icon.png';
+import LogoIcon from '@/assets/images/logo-upload-icon.png';
 import {
   capitalize,
   ErrorToast,
   SuccessToast,
   getFileType,
   capitalizeFirstWord,
+  FONT_TYPE,
+  FONT_SIZE,
+  FONT_PREVIEW_DATA,
+  STATUS,
 } from '@/lib/utils';
 import axios from 'axios';
 
 import GymComponent from '@/components/PageComponents/GymComps';
-
-export const FONT_TYPE = [
-  // { name: 'Select Font', key: '' },
-  { name: 'Roboto', key: 'roboto_sans' },
-  { name: 'Montserrat', key: 'montserrat' },
-  { name: 'Roboto Mono', key: 'roboto_mono' },
-  { name: 'Outfit', key: 'outfit' },
-  { name: 'Fira Code', key: 'fira_code' },
-];
-export const FONT_SIZE = [
-  { name: 'small' },
-  { name: 'medium' },
-  { name: 'large' },
-];
-export const FONT_PREVIEW_DATA = {
-  small: {
-    header: {
-      fontSize: 'text-[44px]',
-      fontWeight: 'font-bold',
-    },
-    subheader: {
-      fontSize: 'text-[30px]',
-      fontWeight: 'font-semibold',
-    },
-    description: {
-      fontSize: 'text-[16px]',
-      fontWeight: 'font-normal',
-    },
-  },
-  medium: {
-    header: {
-      fontSize: 'text-[56px]',
-      fontWeight: 'font-bold',
-    },
-    subheader: {
-      fontSize: 'text-[36px]',
-      fontWeight: 'font-semibold',
-    },
-    description: {
-      fontSize: 'text-[20px]',
-      fontWeight: 'font-normal',
-    },
-  },
-  large: {
-    header: {
-      fontSize: 'text-[72px]',
-      fontWeight: 'font-bold',
-    },
-    subheader: {
-      fontSize: 'text-[48px]',
-      fontWeight: 'font-semibold',
-    },
-    description: {
-      fontSize: 'text-[24px]',
-      fontWeight: 'font-normal',
-    },
-  },
-};
-export const STATUS = [
-  { name: 'Active', value: 1 },
-  { name: 'Inactive', value: 0 },
-];
 
 interface PerformActionsOnGymProps {
   params: {
@@ -228,7 +170,7 @@ const PerformActionsOnGym = ({ params }: PerformActionsOnGymProps) => {
   };
 
   const radioHandler = (e: any) => {
-    let { name, value } = e.target;
+    const { name, value } = e.target;
     setForm((prevData) => ({
       ...prevData,
       [name]: parseInt(value),

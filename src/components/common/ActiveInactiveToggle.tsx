@@ -13,7 +13,7 @@ interface ActiveInactiveToggleProps {
 
 export default function ActiveInactiveToggle({
   accountStatus,
-  userId,
+  // userId,
 }: ActiveInactiveToggleProps) {
   const [openConfirmPopup, setOpenConfirmPopup] = useState(false);
   const [enabled, setEnabled] = useState(false);
@@ -29,10 +29,10 @@ export default function ActiveInactiveToggle({
   const handleStatus = (e: any) => {
     e.preventDefault();
     // eslint-disable-next-line no-unused-vars
-    const payload = {
-      userId: userId,
-      accountStatus: !enabled ? 0 : 1,
-    };
+    // const payload = {
+    //   userId: userId,
+    //   accountStatus: !enabled ? 0 : 1,
+    // };
     // use updated api call from app/api here
     //     successToast(response?.data?.meta?.message);
     //     errorToast(response.data.meta.message);

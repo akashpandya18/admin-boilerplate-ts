@@ -26,7 +26,7 @@ const MultipleSelect = ({
   const [dataList, setDataList] = useState<any[]>([]);
 
   useEffect(() => {
-    let tempArr: any[] = [];
+    const tempArr: any[] = [];
     setArr(selectedFocus);
     data?.map((item: any) => {
       tempArr.push({
@@ -46,8 +46,8 @@ const MultipleSelect = ({
     if (e?.target?.checked) {
       dataList?.map((data) => {
         if (data.id === item.id) {
-          let tempArr = [{ name: item.name, id: item?.id, checked: true }];
-          let filterData = dataList.map(
+          const tempArr = [{ name: item.name, id: item?.id, checked: true }];
+          const filterData = dataList.map(
             (obj) => tempArr.find((o) => o.id === obj.id) || obj
           );
           setDataList(filterData);
@@ -60,8 +60,8 @@ const MultipleSelect = ({
     } else {
       dataList?.map((data) => {
         if (data.id === item.id) {
-          let tempArr = [{ name: item.name, id: item?.id, checked: false }];
-          let filterData = dataList.map(
+          const tempArr = [{ name: item.name, id: item?.id, checked: false }];
+          const filterData = dataList.map(
             (obj) => tempArr.find((o) => o.id === obj.id) || obj
           );
           setDataList(filterData);
@@ -73,8 +73,8 @@ const MultipleSelect = ({
   };
 
   const deleteCapsule = (item: any) => {
-    let tempArr = [{ name: item.name, id: item?.id, checked: false }];
-    let filterData = dataList.map(
+    const tempArr = [{ name: item.name, id: item?.id, checked: false }];
+    const filterData = dataList.map(
       (obj) => tempArr.find((o) => o.id === obj.id) || obj
     );
     setDataList(filterData);

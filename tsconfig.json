@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -8,7 +8,6 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,
@@ -19,6 +18,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
+    "strict": false,
     "plugins": [
       {
         "name": "next"
@@ -27,11 +27,11 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "contentlayer/generated": [
+        "./.contentlayer/generated"
       ]
     },
-    "typeRoots": [
-      "node_modules/@types"
-    ]
   },
   "include": [
     "next-env.d.ts",
@@ -39,7 +39,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next-sitemap.config.js"
+    "next-sitemap.config.js",
+    "tailwind.config.js"
   ],
   "exclude": [
     "node_modules"

@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
 import 'react-html5video/dist/styles.css';
 import { DefaultPlayer as Video } from 'react-html5video';
 import { AspectRatio } from '@/components/ui/aspect-ratio';

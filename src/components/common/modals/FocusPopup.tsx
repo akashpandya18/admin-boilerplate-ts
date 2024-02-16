@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 interface FocusPopupProps {
@@ -10,8 +9,6 @@ interface FocusPopupProps {
 }
 
 const FocusPopup = ({ open, setOpen, data }: FocusPopupProps) => {
-  const cancelButtonRef = useRef(null);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className='sm:max-w-3xl'>

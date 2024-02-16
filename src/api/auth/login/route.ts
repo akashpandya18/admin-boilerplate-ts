@@ -13,7 +13,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const reqBody: LoginRequestBody = req.body;
     const flag = reqBody.flag;
 
-    let flagCheck = flag
+    const flagCheck = flag
       ? 'multipart/form-data; boundary=----WebKitFormBoundaryueI4YvrqiXxUgVGA'
       : 'application/json';
 

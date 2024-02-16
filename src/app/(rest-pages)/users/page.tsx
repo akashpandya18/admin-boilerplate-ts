@@ -122,7 +122,7 @@ const Users = () => {
   const handleSortBy = (sortByValue: SetStateAction<string>) => {
     setSortBy(sortByValue);
     if (sortByValue === sortBy) {
-      let tempSortOrder = sortType === 'ASC' ? 'DESC' : 'ASC';
+      const tempSortOrder = sortType === 'ASC' ? 'DESC' : 'ASC';
       setSortType(tempSortOrder);
       handlePagination(
         page,

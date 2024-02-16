@@ -5,7 +5,7 @@
 // import { onMessageListener, requestForToken } from '../firebase';
 import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { HiBars3, HiChevronDown, HiBell } from 'react-icons/hi2';
+import { HiBars3, HiChevronDown } from 'react-icons/hi2';
 import {
   cleanLocalStorage,
   getLocalStorageItem,
@@ -19,8 +19,8 @@ import { useRouter } from 'next/navigation';
 // import LazyLoadImageProp from '../common/LazyLoadImage';
 import { useSidebarStore } from '@/store/sidebarStore';
 import axios from 'axios';
-import BellStatic from '@/public/assets/bell-static.png';
-import Bell from '@/public/assets/bell.gif';
+import BellStatic from '@/assets/bell-static.png';
+import Bell from '@/assets/bell.gif';
 // import NotificationPopup from '@/app/components/common/NotificationPopup';
 
 function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
@@ -104,11 +104,11 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
                 <div className='flex h-[88px] relative items-center'>
                   {userData?.profile ? (
                     <></>
+                  ) : (
                     // <LazyLoadImageProp
                     //   src={userData.profile}
                     //   className='w-[50px] h-[50px] self-center rounded-full border border-[#EAEAEA]'
                     // />
-                  ) : (
                     <div className='self-center bg-gradient-to-br from-admin-primary to-admin-sidebarBackground flex justify-center items-center w-[50px] h-[50px] rounded-full'>
                       <span className='text-white'>
                         {name && name[0]?.charAt(0)}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
@@ -80,8 +81,8 @@ const SearchableSelect = ({
     if (e?.target?.checked) {
       dropDownData?.map((data) => {
         if (data.id === item.id) {
-          let tempArr = [{ name: item.name, id: item?.id, checked: true }];
-          let filterData = dropDownData.map(
+          const tempArr = [{ name: item.name, id: item?.id, checked: true }];
+          const filterData = dropDownData.map(
             (obj) => tempArr.find((o) => o.id === obj.id) || obj
           );
           setDropDownData(filterData);
@@ -94,8 +95,8 @@ const SearchableSelect = ({
     } else {
       dropDownData?.map((data) => {
         if (data.id === item.id) {
-          let tempArr = [{ name: item.name, id: item?.id, checked: false }];
-          let filterData = dropDownData.map(
+          const tempArr = [{ name: item.name, id: item?.id, checked: false }];
+          const filterData = dropDownData.map(
             (obj) => tempArr.find((o) => o.id === obj.id) || obj
           );
           setDropDownData(filterData);
@@ -107,8 +108,8 @@ const SearchableSelect = ({
   };
 
   const deleteCapsule = (item: any) => {
-    let tempArr = [{ name: item.name, id: item?.id, checked: false }];
-    let filterData = dropDownData.map(
+    const tempArr = [{ name: item.name, id: item?.id, checked: false }];
+    const filterData = dropDownData.map(
       (obj) => tempArr.find((o) => o.id === obj.id) || obj
     );
     setDropDownData(filterData);
