@@ -9,9 +9,9 @@ import { HiBars3, HiChevronDown } from 'react-icons/hi2';
 import {
   cleanLocalStorage,
   getLocalStorageItem,
-  getDeviceToken,
   // errorToast,
   classNames,
+  getJWTToken,
 } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -25,6 +25,7 @@ import Bell from '@/assets/bell.gif';
 
 function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   const router = useRouter();
+  const token = getJWTToken();
   const { isShow, setShow } = useSidebarStore();
   const [bellSrc, setBellSrc] = useState(BellStatic);
   // const [showPopup, setShowPopup] = useState(false);
@@ -51,12 +52,15 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   // });
 
   const handleLogout = async () => {
-    if (getDeviceToken())
-      await axios.delete('/api/logout', {
-        params: { tag: '/device-token', isHeader: true },
-      });
-    cleanLocalStorage();
-    router.push('/login');
+    const payload = {
+      isHeader: true,
+    };
+
+    if (token) {
+      await axios.delete('/api/auth/logout', { data: JSON.stringify(payload) });
+      cleanLocalStorage();
+      router.push('/login');
+    }
   };
 
   const name = userData?.name?.split(' ');

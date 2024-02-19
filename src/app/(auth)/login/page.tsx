@@ -37,47 +37,44 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const { errors, isValid } = loginValidation(form);
-    if (isValid) {
-      setLoader(true);
-      const payload = {
-        email: form.email,
-        password: form.password,
-      };
-      try {
-        const login = await axios.post('/api/auth/login', payload);
-        const response = login.data;
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    setLoader(true);
 
-        if (response) {
-          if (response?.data?.meta?.code === 1) {
-            setLocalStorageItem('token', response?.data?.meta?.token);
-            setLocalStorageItem(
-              'userData',
-              JSON.stringify(response?.data?.data)
-            );
-            response?.data?.meta?.refreshToken &&
-              setLocalStorageItem(
-                'refreshToken',
-                response?.data?.meta?.refreshToken
-              );
-            setLoader(false);
-            router.push('/users');
-          } else if (response?.data?.meta?.code === 0) {
-            setLoader(false);
-            ErrorToast(response?.data?.meta?.message);
-          } else {
-            setLoader(false);
-          }
-        }
-      } catch (error) {
-        setLoader(false);
-        setError(error);
-      }
-    } else {
+    const { errors, isValid } = loginValidation(form);
+
+    if (!isValid) {
       setLoader(false);
       setError(errors);
+      return;
+    }
+
+    const payload = {
+      email: form.email,
+      password: form.password,
+    };
+
+    try {
+      const { data: response } = await axios.post(
+        '/api/auth/login',
+        JSON.stringify(payload)
+      );
+
+      if (response?.meta?.code === 1) {
+        if (response.meta.refreshToken) {
+          setLocalStorageItem('refreshToken', response.meta.refreshToken);
+        }
+
+        setLocalStorageItem('token', response.meta.token);
+        setLocalStorageItem('userData', JSON.stringify(response.data));
+        router.push('/users');
+      } else {
+        ErrorToast(response.meta.message);
+      }
+    } catch (error) {
+      setError(error.response?.meta?.message || 'An error occurred');
+    } finally {
+      setLoader(false);
     }
   };
 

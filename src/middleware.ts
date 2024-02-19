@@ -156,15 +156,26 @@ export async function middleware(request: NextRequest) {
   if (isPrivateRoute) {
     // Attempt to get tokens and userData from cookies
     const token = request.cookies.get('token');
-    const refreshToken = request.cookies.get('refreshToken');
+    // const refreshToken = request.cookies.get('refreshToken');
     const userData = request.cookies.get('userData');
 
     // Redirect to /login if any of the authentication details are missing
-    if (!token || !refreshToken || !userData) {
+    if (!token || !userData) {
       const url = request.url;
       return NextResponse.redirect(new URL('/login', url));
     }
   }
 
-  // return NextResponse.redirect(new URL('/not-found', request.url));
+  if (pathname === '/login') {
+    const token = request.cookies.get('token');
+    // const refreshToken = request.cookies.get('refreshToken');
+    const userData = request.cookies.get('userData');
+
+    if (token && userData) {
+      const url = request.url;
+      return NextResponse.redirect(new URL('/users', url));
+    }
+  }
+
+  // return NextResponse.redirect(new URL(pathname, request.url));
 }
