@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState, useEffect, SetStateAction } from 'react';
@@ -7,7 +8,7 @@ import { ErrorToast, SuccessToast } from '@/lib/utils';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import SelectMenu from '@/components/common/SelectMenu';
 import SearchInput from '@/components/common/Input/SearchInput';
-import Table from '@/components/common/Table';
+// import Table from '@/components/common/Table';
 import Pagination from '@/components/common/Pagination/Pagination';
 import axios from 'axios';
 
@@ -242,7 +243,7 @@ const Users = () => {
         </div>
 
         <div className='mt-4'>
-          <Table
+          {/* <Table
             columns={columns}
             data={usersList}
             name={'users_table'}
@@ -255,7 +256,7 @@ const Users = () => {
             message={
               'Are you sure you want to delete this record? This action cannot be undone.'
             }
-          />
+          /> */}
         </div>
       </div>
       <div>

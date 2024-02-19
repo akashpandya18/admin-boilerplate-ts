@@ -3,9 +3,8 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { CONTENT_TYPE } from './constants';
-import {
+import React, {
   JSXElementConstructor,
-  PromiseLikeOfReactNode,
   ReactElement,
   ReactNode,
   ReactPortal,
@@ -157,7 +156,6 @@ export const informativeToast = (
     | ReactElement<any, string | JSXElementConstructor<any>>
     | Iterable<ReactNode>
     | ReactPortal
-    | PromiseLikeOfReactNode
     | null
     | undefined,
   duration = 3000

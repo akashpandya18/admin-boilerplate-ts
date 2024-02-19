@@ -1,4 +1,5 @@
 import Layout from '@/components/Layout/Layout';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 export const metadata = {
   title: 'Admin Panel',

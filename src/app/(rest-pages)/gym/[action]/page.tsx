@@ -7,7 +7,6 @@ import Breadcrumb from '@/components/common/Breadcrumb';
 import Loader from '@/components/common/Loader';
 import adminGymAddEditValidation from '@/validation/adminGymAddEditValidation';
 import './fonts.css';
-import LogoIcon from '@/assets/images/logo-upload-icon.png';
 import {
   capitalize,
   ErrorToast,
@@ -455,7 +454,6 @@ const PerformActionsOnGym = ({ params }: PerformActionsOnGymProps) => {
             imageRef={imageRef}
             loader={loader}
             preview={preview}
-            LogoIcon={LogoIcon}
             isColorPickerOpen={isColorPickerOpen}
             setIsColorPickerOpen={setIsColorPickerOpen}
             setForm={setForm}

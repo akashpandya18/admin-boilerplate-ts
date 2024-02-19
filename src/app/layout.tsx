@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
-import { Raleway } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import './globals.css';
-import { cn } from '@/lib/utils';
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-const raleway = Raleway({
+const cn = (...inputs: ClassValue[]) => {
+  return twMerge(clsx(inputs));
+};
+
+const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-raleway',
+  variable: '--font-outfit',
   display: 'swap',
 });
 
@@ -23,8 +28,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang='en' suppressHydrationWarning>
       <body
         className={cn(
-          'min-h-screen bg-background font-raleway antialiased',
-          raleway.variable
+          'min-h-screen bg-background font-outfit antialiased',
+          outfit.variable
         )}
       >
         {children}

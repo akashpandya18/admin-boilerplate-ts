@@ -8,6 +8,9 @@ import LazyLoadImageProp from '@/components/common/LazyLoadImage';
 import ColorPicker from 'react-pick-color';
 import { HiCamera } from 'react-icons/hi2';
 import { truncateParagraph } from '@/lib/utils';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import LogoIcon from '@/assets/images/logo-upload-icon.png';
 
 interface GymComponentProps {
   form: any;
@@ -23,7 +26,6 @@ interface GymComponentProps {
   imageRef: any;
   loader: boolean;
   preview: any;
-  LogoIcon: any;
   isColorPickerOpen: boolean;
   setIsColorPickerOpen: any;
   setForm: any;
@@ -54,7 +56,6 @@ const GymComponent = ({
   imageRef,
   loader,
   preview,
-  LogoIcon,
   isColorPickerOpen,
   setIsColorPickerOpen,
   setForm,
@@ -77,18 +78,22 @@ const GymComponent = ({
           <div className='grid items-center justify-center w-full gap-4 md:gap-6 md:grid-cols-6 md:grid-rows-2 xl:grid-cols-12 place-items-center'>
             <div className='mb-auto md:row-span-1 md:col-span-1'>
               <div className='flex flex-col items-center gap-y-2'>
-                <label className='block text-sm font-medium text-center text-gray-700'>
+                <Label
+                  htmlFor='picture'
+                  className='block text-sm font-medium text-center text-gray-700'
+                >
                   {isView ? 'Uploaded Logo' : 'Upload Logo'}
-                </label>
-                <input
+                </Label>
+                <Input
                   onChange={onSelectFile}
+                  id='picture'
+                  type='file'
                   className='hidden'
                   disabled={isView}
                   ref={imageRef}
-                  type='file'
                   accept='.jpg, .jpeg, .png'
                 />
-                <div className=''>
+                <div>
                   {!loader ? (
                     <div
                       className={`relative m-auto w-[100px] rounded-[50%] ${
@@ -99,7 +104,7 @@ const GymComponent = ({
                       }}
                     >
                       <LazyLoadImageProp
-                        imageSrc={preview || LogoIcon}
+                        imageSrc={preview || LogoIcon.src}
                         className={
                           'border border-gray-300 w-[100px] h-[100px] p-2 rounded-lg m-auto'
                         }

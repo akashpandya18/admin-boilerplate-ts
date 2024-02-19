@@ -1,9 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { fontFamily } = require('tailwindcss/defaultTheme');
+/** @type {import('tailwindcss').Config} **/
 
-/** @type {import('tailwindcss').Config}**/
-
-const config = {
+module.exports = {
   darkMode: ['class'],
   content: [
     './pages/**/*.{ts,tsx,js,jsx}',
@@ -22,7 +21,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        raleway: ['var(--font-raleway)', ...fontFamily.sans],
+        outfit: ['var(--font-outfit)', ...fontFamily.sans],
       },
       colors: {
         admin: {
@@ -162,5 +161,3 @@ const config = {
   },
   plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 };
-
-export default config;

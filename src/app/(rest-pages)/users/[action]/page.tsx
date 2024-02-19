@@ -13,7 +13,7 @@ import {
 } from '@/lib/utils';
 import adminAddEditValidation from '@/validation/adminAddEditValidation';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const USER_TYPE = [{ name: 'Select Gym', value: '' }];
 const STATUS = [
@@ -116,10 +116,11 @@ const PerformActionsOnUser = ({ params }: PerformActionsOnUserProps) => {
           if (response?.data?.meta?.code === 1) {
             setLoader(false);
             SuccessToast(response?.data?.meta?.message);
-            router.push({
+            const routerData = {
               pathname: '/users',
               query: { flag: userData?.userType ? 0 : null },
-            });
+            };
+            router.push(JSON.stringify(routerData));
           } else if (response?.data?.meta?.code === 0) {
             setLoader(false);
             ErrorToast(response?.data?.meta?.message);

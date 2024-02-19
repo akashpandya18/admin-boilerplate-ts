@@ -5,6 +5,8 @@ import PrimaryButton from '@/components/common/Buttons/PrimaryButton';
 import SecondaryButton from '@/components/common/Buttons/SecondaryButton';
 import CommonInput from '@/components/common/Input/CommonInput';
 import SelectMenu from '@/components/common/SelectMenu';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
 
 interface UserComponentProps {
   pages: any[];
@@ -122,14 +124,14 @@ const UserComponent = ({
                   </span>
                 </div>
                 <div>
-                  <label className='block text-sm font-medium text-gray-700'>
+                  <Label className='block text-sm font-medium text-gray-700'>
                     Status
-                  </label>
+                  </Label>
                   <fieldset className='mt-4'>
                     <div className='flex space-x-4'>
                       {MainStatus.map((status, index) => (
                         <div key={index} className='flex items-center'>
-                          <input
+                          <Input
                             id={status.name}
                             name='status'
                             type='radio'
@@ -141,14 +143,14 @@ const UserComponent = ({
                               isView ? 'cursor-default' : 'cursor-pointer'
                             } text-admin-primary focus:ring-admin-primary`}
                           />
-                          <label
+                          <Label
                             htmlFor={status.name}
                             className={`block ml-3 text-sm font-medium text-gray-700 ${
                               isView ? 'cursor-default' : 'cursor-pointer'
                             }`}
                           >
                             {status.name}
-                          </label>
+                          </Label>
                         </div>
                       ))}
                     </div>

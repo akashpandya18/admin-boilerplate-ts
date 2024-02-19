@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 'use client';
 
 import { SetStateAction, useEffect, useState } from 'react';
 import Breadcrumb from '@/components/common/Breadcrumb';
-import Table from '@/components/common/Table';
+// import Table from '@/components/common/Table';
 import Pagination from '@/components/common/Pagination/Pagination';
 import { ErrorToast, SuccessToast } from '@/lib/utils';
 import SearchInput from '@/components/common/Input/SearchInput';
@@ -257,7 +258,7 @@ function Gym() {
         </div>
 
         <div className='mt-4'>
-          <Table
+          {/* <Table
             columns={columns}
             data={gymList}
             name={'gym_table'}
@@ -267,7 +268,7 @@ function Gym() {
             setSortBy={(sort: string) => handleSortBy(sort)}
             loader={loader}
             setSearchTerm={(data: SetStateAction<string>) => setSearch(data)}
-          />
+          /> */}
         </div>
       </div>
       <div>

@@ -132,8 +132,13 @@ const PRIVATE_ROUTES: { path: string[] }[] = [
     path: ['/content-management/shoorah-pods/add-edit'],
   },
 ];
-export function middleware(request: NextRequest) {
-  console.log('pathname', request);
+
+export const config: { matcher: string[] } = {
+  matcher: ['/((?!api|_next/static|_next/image|site.webmanifest|favicon*).*)'],
+};
+
+export async function middleware(request: NextRequest) {
+  // console.log('pathname', request);
 
   const { pathname } = request.nextUrl;
 
@@ -161,9 +166,5 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(new URL('/not-found', request.url));
+  // return NextResponse.redirect(new URL('/not-found', request.url));
 }
-
-export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|site.webmanifest|favicon*).*)'],
-};

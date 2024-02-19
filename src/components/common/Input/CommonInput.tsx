@@ -4,7 +4,6 @@ import { HiEye, HiEyeSlash, HiArrowTopRightOnSquare } from 'react-icons/hi2';
 import { useState } from 'react';
 import { MaxCharlimit } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 
 interface CommonInputProps {
   id: string;
@@ -64,7 +63,7 @@ const CommonInput = ({
               : 'relative mt-1'
           }`}
         >
-          <Input
+          <input
             id={id}
             name={name}
             type={showEyeIcon ? 'text' : type}
@@ -77,31 +76,30 @@ const CommonInput = ({
                 ? `${value}${domain_url_name}`
                 : value
             }
-            className={`block w-full appearance-none focus:outline-none sm:text-sm focus:border-admin-primary  focus:ring-admin-primary ${
+            className={`block w-full appearance-none focus:outline-none sm:text-sm focus:border-admin-primary focus:ring-admin-primary ${
               classNames ? classNames : 'px-3 py-2'
             } ${
               name === 'domain_name'
                 ? 'overflow-x-scroll rounded-l-full'
                 : 'placeholder-gray-400 border border-gray-300 rounded-full'
-            } `}
+            }`}
             {...props}
-          >
-            {disabled && name === 'domain_name' && (
-              <div
-                className='flex items-center w-auto px-2 cursor-pointer'
-                onClick={() =>
-                  window.open(`https://${value}${domain_url_name}`, '_blank')
-                }
-              >
-                <HiArrowTopRightOnSquare className='w-5 h-5 mr-1' />
-              </div>
-            )}
-            {!disabled && name === 'domain_name' && (
-              <div className='flex items-center w-auto px-2 bg-gray-100 rounded-r-full'>
-                <p className='text-sm text-gray-500'>{domain_url_name}</p>
-              </div>
-            )}
-          </Input>
+          />
+          {disabled && name === 'domain_name' && (
+            <div
+              className='absolute right-0 flex items-center h-full px-2 cursor-pointer'
+              onClick={() =>
+                window.open(`https://${value}${domain_url_name}`, '_blank')
+              }
+            >
+              <HiArrowTopRightOnSquare className='w-5 h-5 mr-1' />
+            </div>
+          )}
+          {!disabled && name === 'domain_name' && (
+            <div className='flex items-center w-auto px-2 bg-gray-100 rounded-r-full'>
+              <p className='text-sm text-gray-500'>{domain_url_name}</p>
+            </div>
+          )}
         </div>
         {isIcon &&
           (showEyeIcon ? (

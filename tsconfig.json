@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "ESNext"
-    ],
+    "target": "ES6",
+    "lib": ["dom", "dom.iterable", "ESNext"],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -25,15 +21,12 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "contentlayer/generated": [
-        "./.contentlayer/generated"
-      ]
-    },
+      "@/*": ["./src/*"],
+      "contentlayer/generated": ["./.contentlayer/generated"]
+    }
   },
   "include": [
+    "/src/middleware.ts",
     "next-env.d.ts",
     "typedefs/index.d.ts",
     "**/*.ts",
@@ -42,7 +35,5 @@
     "next-sitemap.config.js",
     "tailwind.config.js"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

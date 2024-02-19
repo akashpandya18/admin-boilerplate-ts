@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 'use client';
 
@@ -10,7 +11,7 @@ import {
   getUserType,
   // SuccessToast,
 } from '@/lib/utils';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import {
   HiOutlinePencilSquare,
   HiOutlineTrash,
@@ -69,6 +70,8 @@ const Table = ({
   message,
   // contentType,
 }: TableProps) => {
+  const router = useRouter();
+
   const checkbox = useRef<any>({ indeterminate: false });
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
@@ -104,8 +107,6 @@ const Table = ({
   const [openFocusPopup, setOpenFocusPopup] = useState(false);
   const [focusData, setFocusData] = useState<any[]>([]);
 
-  const router = useRouter();
-
   const deleteHandler = (id: React.SetStateAction<string>) => {
     setIdToDelete(id);
     setDeletePopup(true);
@@ -130,21 +131,14 @@ const Table = ({
     setFocusData(data);
   };
 
+  const handleOldNew = (data: any, column: any) => {
+    const pathname = column.isTwoOption;
+    const option = data?.value == 1 ? 1 : 2;
+    const routeData = { pathname, query: { action: 'view', option } };
+    router.push(JSON.stringify(routeData));
+  };
+
   const formattedData = (rowData: any, data: any, type: any, column: any) => {
-    const handleOldNew = (data: any) => {
-      const pathname = column.isTwoOption;
-      const option = data?.value == 1 ? 1 : 2;
-
-      router.push({
-        pathname: pathname,
-        query: {
-          ...rowData,
-          action: 'view',
-          option: option,
-        },
-      });
-    };
-
     if (type === 'badge') {
       return (
         <p
@@ -201,26 +195,25 @@ const Table = ({
           {column.isEdit && (
             <HiOutlinePencilSquare
               className='w-[20px] ml-2 text-admin-secondary cursor-pointer'
-              onClick={() =>
-                router.push({
+              onClick={() => {
+                const routeData = {
                   pathname: column.isEdit,
-                  query: {
-                    ...rowData,
-                    action: 'edit',
-                  },
-                })
-              }
+                  query: { ...rowData, action: 'edit' },
+                };
+                return router.push(JSON.stringify(routeData));
+              }}
             />
           )}
           {column?.isView && (
             <HiOutlineEye
               className='w-[20px] ml-2 text-admin-secondary cursor-pointer'
-              onClick={() =>
-                router.push({
+              onClick={() => {
+                const routeData = {
                   pathname: column.isView,
                   query: { ...rowData, action: 'view' },
-                })
-              }
+                };
+                return router.push(JSON.stringify(routeData));
+              }}
             />
           )}
           {column?.isTwoOption &&
@@ -231,7 +224,7 @@ const Table = ({
                   onClick={() => setOpen(!open)}
                 />
                 {open ? (
-                  <Listbox onChange={(data) => handleOldNew(data)}>
+                  <Listbox onChange={(data) => handleOldNew(data, column)}>
                     {() => (
                       <>
                         <div className='relative'>
@@ -266,12 +259,13 @@ const Table = ({
             ) : (
               <HiOutlineEye
                 className='w-[20px] ml-2 text-admin-secondary cursor-pointer'
-                onClick={() =>
-                  router.push({
+                onClick={() => {
+                  const routeData = {
                     pathname: column.isView,
                     query: { ...rowData, action: 'view' },
-                  })
-                }
+                  };
+                  return router.push(JSON.stringify(routeData));
+                }}
               />
             ))}
           {column.isDelete && (
