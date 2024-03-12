@@ -4,13 +4,15 @@
 import { useState, useEffect, SetStateAction } from 'react';
 import { useRouter } from 'next/navigation';
 import { PER_PAGE } from '@/lib/constants';
-import { ErrorToast, SuccessToast } from '@/lib/utils';
+import { SuccessToast } from '@/lib/utils';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import SelectMenu from '@/components/common/SelectMenu';
 import SearchInput from '@/components/common/Input/SearchInput';
-// import Table from '@/components/common/Table';
+import { toast } from 'sonner';
+import { FaXmark } from 'react-icons/fa6';
 import Pagination from '@/components/common/Pagination/Pagination';
-import axios from 'axios';
+import { Api } from '@/app/api';
+import Table from '@/components/common/Table';
 
 const pages = [{ name: 'Users', href: '/users' }];
 
@@ -77,50 +79,48 @@ const Users = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('created_at');
+  const [sortBy, setSortBy] = useState('first_name');
   const [sortType, setSortType] = useState('DESC');
   const [selectedPerPage, setSelectedPerPage] = useState(PER_PAGE[0]);
 
   const handlePagination = async (
-    pageN: SetStateAction<number>,
+    pageN: number,
     perPage: number,
     query: string,
-    sortBy: SetStateAction<string>,
+    sortBy: string,
     sortType: string
   ) => {
     setLoader(true);
 
     try {
-      const usersRes = await axios.get(
-        `/api/admin/users?page=${pageN}&per_page=${perPage}&search=${query}&sort_by=${sortBy}&sort_type=${sortType}`
+      const usersRes = await Api.getUsers(
+        pageN,
+        perPage,
+        query,
+        sortBy,
+        sortType
       );
       const res = usersRes.data;
+
       if (res) {
-        if (res?.data?.meta?.code === 1) {
-          setUsersList(res?.data?.data);
-          setPage(pageN);
-          setTotalCount(res?.data?.meta?.totalCount);
-          setLoader(false);
-        } else if (res?.code === 401) {
-          setLoader(false);
-          ErrorToast(res?.message);
-        } else if (res?.data?.meta?.code === 0) {
-          setPage(1);
-          setUsersList([]);
-          setTotalCount(0);
-          setLoader(false);
-          ErrorToast(res?.data?.meta?.message);
-        } else {
-          setLoader(false);
-        }
+        setUsersList(res);
+        setPage(pageN);
+        setTotalCount(res.length);
+        setLoader(false);
+      } else {
+        setUsersList([]);
+        setPage(1);
+        setTotalCount(0);
+        setLoader(false);
+        toast.error(res?.data?.meta?.message);
       }
     } catch (error: any) {
       setLoader(false);
-      ErrorToast(error?.response?.data?.message);
+      toast.error(error?.response?.statusText);
     }
   };
 
-  const handleSortBy = (sortByValue: SetStateAction<string>) => {
+  const handleSortBy = (sortByValue: string) => {
     setSortBy(sortByValue);
     if (sortByValue === sortBy) {
       const tempSortOrder = sortType === 'ASC' ? 'DESC' : 'ASC';
@@ -134,13 +134,38 @@ const Users = () => {
       );
     } else {
       setSortType('ASC');
-      handlePagination(
-        page,
-        selectedPerPage?.value,
-        search,
-        sortByValue,
-        'ASC'
-      );
+      handlePagination(page, selectedPerPage?.value, search, sortBy, 'ASC');
+    }
+  };
+
+  const handlePerPage = (perPage: any) => {
+    setSelectedPerPage(perPage);
+    handlePagination(1, perPage.value, search, sortBy, sortType);
+  };
+
+  const refreshTable = () =>
+    handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
+
+  const deleteHandler = async (id: any) => {
+    setLoader(true);
+    setSearch('');
+    try {
+      const delRes = await Api.deleteUser(id);
+      const response = delRes.data;
+      if (response) {
+        if (response?.data?.meta?.code === 1) {
+          handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
+          SuccessToast(response?.data?.meta?.message);
+        } else if (response?.data?.meta?.code === 0) {
+          setLoader(false);
+          toast.error(response?.data?.meta?.message);
+        } else {
+          setLoader(false);
+        }
+      }
+    } catch (error: any) {
+      setLoader(false);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -155,37 +180,6 @@ const Users = () => {
       handlePagination(1, 10, '', sortBy, sortType);
     }
   }, [search]);
-
-  const handlePerPage = (perPage: any) => {
-    setSelectedPerPage(perPage);
-    handlePagination(1, perPage.value, search, sortBy, sortType);
-  };
-
-  const refreshTable = () =>
-    handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
-
-  const deleteHandler = async (id: any) => {
-    setLoader(true);
-    setSearch('');
-    try {
-      const delRes = await axios.delete(`/api/admin/users?${id}`);
-      const response = delRes.data;
-      if (response) {
-        if (response?.data?.meta?.code === 1) {
-          handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
-          SuccessToast(response?.data?.meta?.message);
-        } else if (response?.data?.meta?.code === 0) {
-          setLoader(false);
-          ErrorToast(response?.data?.meta?.message);
-        } else {
-          setLoader(false);
-        }
-      }
-    } catch (error: any) {
-      setLoader(false);
-      ErrorToast(error?.response?.data?.message);
-    }
-  };
 
   return (
     <div className='relative'>
@@ -243,20 +237,20 @@ const Users = () => {
         </div>
 
         <div className='mt-4'>
-          {/* <Table
+          <Table
             columns={columns}
             data={usersList}
             name={'users_table'}
             setDeleteId={deleteHandler}
             // bottomBorder={totalCount > selectedPerPage?.value}
             refreshTable={refreshTable}
-            setSortBy={(sort: SetStateAction<string>) => handleSortBy(sort)}
+            setSortBy={(sort: string) => handleSortBy(sort)}
             loader={loader}
             setSearchTerm={(data: SetStateAction<string>) => setSearch(data)}
             message={
               'Are you sure you want to delete this record? This action cannot be undone.'
             }
-          /> */}
+          />
         </div>
       </div>
       <div>

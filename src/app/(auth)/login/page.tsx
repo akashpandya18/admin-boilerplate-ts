@@ -2,19 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  ErrorToast,
-  getLocalStorageItem,
-  setLocalStorageItem,
-} from '@/lib/utils';
 import Loader from '@/components/common/Loader';
 import CommonInput from '@/components/common/Input/CommonInput';
 import loginValidation from '@/validation/loginValidation';
-import axios from 'axios';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Api } from '@/app/api';
+import { setCookie, getCookie } from 'cookies-next';
 
 const Login = () => {
   const router = useRouter();
@@ -55,31 +51,35 @@ const Login = () => {
     };
 
     try {
-      const { data: response } = await axios.post(
-        '/api/auth/login',
-        JSON.stringify(payload)
-      );
+      const { data: response } = await Api.login(JSON.stringify(payload));
 
-      if (response?.meta?.code === 1) {
+      if (response) {
         if (response.meta.refreshToken) {
-          setLocalStorageItem('refreshToken', response.meta.refreshToken);
+          setCookie('refreshToken', response.meta.refreshToken, {
+            maxAge: 60 * 60 * 24 * 6,
+            path: '/',
+          });
         }
-
-        setLocalStorageItem('token', response.meta.token);
-        setLocalStorageItem('userData', JSON.stringify(response.data));
+        setCookie('admin-token', response.meta.token, {
+          maxAge: 60 * 60 * 24 * 3,
+          path: '/',
+        });
+        setCookie('admin-userData', JSON.stringify(response.data), {
+          maxAge: 60 * 60 * 24 * 3,
+          path: '/',
+        });
         router.push('/users');
-      } else {
-        ErrorToast(response.meta.message);
       }
     } catch (error) {
-      setError(error.response?.meta?.message || 'An error occurred');
-    } finally {
+      console.log('error', error);
       setLoader(false);
     }
   };
 
   useEffect(() => {
-    if (getLocalStorageItem('token') && getLocalStorageItem('userData')) {
+    const token = getCookie('admin-token');
+    const userData = getCookie('admin-userData');
+    if (token && userData) {
       router.push('/users');
     }
   }, []);

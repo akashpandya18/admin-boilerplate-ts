@@ -23,6 +23,7 @@ import {
   PiGenderNonbinaryBold as NonBinary,
   PiGenderIntersexBold as InterSex,
 } from 'react-icons/pi';
+import { deleteCookie, getCookie } from 'cookies-next';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,14 +51,24 @@ export const cleanLocalStorage = () => {
     localStorage.clear();
   }
 };
-export const getJWTToken = () => {
+export const cleanCookies = () => {
   if (typeof window !== 'undefined') {
-    return 'Bearer ' + localStorage.getItem('token');
+    deleteCookie('admin-token');
+    deleteCookie('refreshToken');
+    deleteCookie('admin-userData');
+    deleteCookie('deviceToken');
+  }
+};
+export const getJWTToken = () => {
+  const token = getCookie('admin-token');
+  if (typeof window !== 'undefined') {
+    return 'Bearer ' + token;
   }
 };
 export const getDeviceToken = () => {
+  const deviceToken = getCookie('deviceToken');
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('deviceToken');
+    return deviceToken;
   }
 };
 export const getUserType = (type: number) =>
@@ -219,9 +230,8 @@ export const getFilterKey = (value: {
 };
 
 export const isSuperAdmin = () => {
-  const userData =
-    getLocalStorageItem('userData') &&
-    JSON.parse(getLocalStorageItem('userData') as string);
+  const userDataMain = getCookie('admin-userData');
+  const userData = userDataMain && JSON.parse(userDataMain);
   return userData.userType;
 };
 

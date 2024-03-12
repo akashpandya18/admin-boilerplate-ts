@@ -54,7 +54,6 @@ interface TableProps {
   loader: boolean;
   setSearchTerm: any;
   message?: string;
-  contentType?: string;
 }
 
 const Table = ({
@@ -64,11 +63,10 @@ const Table = ({
   setSelectedRow,
   name,
   setSortBy,
-  // refreshTable,
+  refreshTable,
   loader,
   setSearchTerm,
   message,
-  // contentType,
 }: TableProps) => {
   const router = useRouter();
 
@@ -465,43 +463,43 @@ const Table = ({
     setIdToDelete('');
   };
 
-  const userTableBulk = () => {
-    // const payload = {
-    //   ids: selectedData,
-    //   status: `${actionType}`,
-    // };
-    // TODO: new call method when api is ready
-    // Api.postUserBulkAction(payload).then((response) => {
-    //   if (response.meta.code === 1) {
-    //     successToast(response.meta.message);
-    //     setSelectedData([]);
-    //     setChecked(false);
-    //     setIndeterminate(false);
-    //     refreshTable();
-    //   } else if (response.meta.code === 0) {
-    //     errorToast(response.meta.message);
-    //   }
-    // });
-  };
+  // const userTableBulk = () => {
+  //   // const payload = {
+  //   //   ids: selectedData,
+  //   //   status: `${actionType}`,
+  //   // };
+  //   // TODO: new call method when api is ready
+  //   // Api.postUserBulkAction(payload).then((response) => {
+  //   //   if (response.meta.code === 1) {
+  //   //     successToast(response.meta.message);
+  //   //     setSelectedData([]);
+  //   //     setChecked(false);
+  //   //     setIndeterminate(false);
+  //   //     refreshTable();
+  //   //   } else if (response.meta.code === 0) {
+  //   //     errorToast(response.meta.message);
+  //   //   }
+  //   // });
+  // };
 
-  const gymTableBulk = () => {
-    // const payload = {
-    //   ids: selectedData,
-    //   status: `${actionType}`,
-    // };
-    // TODO: new call method when api is ready
-    // Api.postGymBulkAction(payload).then((response) => {
-    //   if (response.meta.code === 1) {
-    //     successToast(response.meta.message);
-    //     setSelectedData([]);
-    //     setChecked(false);
-    //     setIndeterminate(false);
-    //     refreshTable();
-    //   } else if (response.meta.code === 0) {
-    //     errorToast(response.meta.message);
-    //   }
-    // });
-  };
+  // const gymTableBulk = () => {
+  //   // const payload = {
+  //   //   ids: selectedData,
+  //   //   status: `${actionType}`,
+  //   // };
+  //   // TODO: new call method when api is ready
+  //   // Api.postGymBulkAction(payload).then((response) => {
+  //   //   if (response.meta.code === 1) {
+  //   //     successToast(response.meta.message);
+  //   //     setSelectedData([]);
+  //   //     setChecked(false);
+  //   //     setIndeterminate(false);
+  //   //     refreshTable();
+  //   //   } else if (response.meta.code === 0) {
+  //   //     errorToast(response.meta.message);
+  //   //   }
+  //   // });
+  // };
 
   // const otherBulk = () => {
   //   const payload = {
@@ -525,18 +523,18 @@ const Table = ({
   const handleBulkOperation = () => {
     setBulkOperationPopup(false);
     setSearchTerm('');
-    switch (name) {
-      case 'users_table':
-        userTableBulk();
-        break;
+    // switch (name) {
+    //   case 'users_table':
+    //     userTableBulk();
+    //     break;
 
-      case 'gym_table':
-        gymTableBulk();
-        break;
-      default:
-        // otherBulk();
-        break;
-    }
+    //   // case 'gym_table':
+    //   //   gymTableBulk();
+    //   //   break;
+    //   default:
+    //     // otherBulk();
+    //     break;
+    // }
   };
 
   const handleResendNotification = (e: any, row: any) => {

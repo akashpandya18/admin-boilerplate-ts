@@ -3,6 +3,8 @@ import { Outfit } from 'next/font/google';
 import './globals.css';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import Toast from '@/components/common/Toast';
+import { Toaster } from '@/components/ui/sonner';
 
 const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
@@ -32,6 +34,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           outfit.variable
         )}
       >
+        <Toast />
+        <Toaster richColors theme='light' closeButton={true} />
         {children}
       </body>
     </html>

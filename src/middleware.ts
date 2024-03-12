@@ -138,8 +138,6 @@ export const config: { matcher: string[] } = {
 };
 
 export async function middleware(request: NextRequest) {
-  // console.log('pathname', request);
-
   const { pathname } = request.nextUrl;
 
   // Check if the request is for the homepage
@@ -155,9 +153,9 @@ export async function middleware(request: NextRequest) {
 
   if (isPrivateRoute) {
     // Attempt to get tokens and userData from cookies
-    const token = request.cookies.get('token');
+    const token = request.cookies.get('admin-token');
     // const refreshToken = request.cookies.get('refreshToken');
-    const userData = request.cookies.get('userData');
+    const userData = request.cookies.get('admin-userData');
 
     // Redirect to /login if any of the authentication details are missing
     if (!token || !userData) {
@@ -167,9 +165,9 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname === '/login') {
-    const token = request.cookies.get('token');
+    const token = request.cookies.get('admin-token');
     // const refreshToken = request.cookies.get('refreshToken');
-    const userData = request.cookies.get('userData');
+    const userData = request.cookies.get('admin-userData');
 
     if (token && userData) {
       const url = request.url;
