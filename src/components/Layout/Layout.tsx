@@ -3,15 +3,9 @@
 /* eslint-disable no-unused-vars */
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useState, useEffect } from 'react';
-import {
-  cleanLocalStorage,
-  getDeviceToken,
-  getLocalStorageItem,
-  useWindowDimensions,
-} from '@/lib/utils';
-import axios from 'axios';
+import { cleanCookies, getJWTToken, useWindowDimensions } from '@/lib/utils';
 import Header from './Header';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 
 type props = {
@@ -30,18 +24,17 @@ const LoadSideBar = () => {
 };
 
 const Layout = ({ children }: props) => {
+  const router = useRouter();
+  const token = getJWTToken();
   const [unreadNotiCount] = useState(0);
   const { isShow, setShow } = useSidebarStore();
   const { width } = useWindowDimensions();
 
   useEffect(() => {
     async function logoutUser() {
-      if (!getLocalStorageItem('token')) {
-        if (getDeviceToken())
-          await axios.delete('/api/logout', {
-            params: { tag: '/device-token', isHeader: true },
-          });
-        cleanLocalStorage();
+      if (!token) {
+        cleanCookies();
+        router.push('/login');
       }
     }
     logoutUser();

@@ -3,9 +3,9 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import {
-  cleanLocalStorage,
+  cleanCookies,
   // getLocalStorageItem,
-  getDeviceToken,
+  getJWTToken,
 } from '@/lib/utils';
 import Menu from './Menu';
 import { useRouter } from 'next/navigation';
@@ -15,7 +15,6 @@ import userIcon from '@/assets/user.gif';
 import userStatic from '@/assets/user-static.png';
 import gymIcon from '@/assets/gym.gif';
 import staticGym from '@/assets/gym-static.png';
-import axios from 'axios';
 import LogStatic from '@/assets/logout-static.png';
 import Log from '@/assets/logout.gif';
 import Image from 'next/image';
@@ -23,6 +22,7 @@ import packageJson from '../../../package.json';
 
 function Sidebar() {
   const router = useRouter();
+  const token = getJWTToken();
   const { isShow, setShow } = useSidebarStore();
   const [logSrc, setLogSrc] = useState(LogStatic);
   const version = packageJson.version;
@@ -61,12 +61,10 @@ function Sidebar() {
   }, []);
 
   const handleLogout = async () => {
-    if (getDeviceToken())
-      await axios.delete('/api/logout', {
-        params: { tag: '/device-token', isHeader: true },
-      });
-    cleanLocalStorage();
-    router.push('/login');
+    if (token) {
+      cleanCookies();
+      router.push('/login');
+    }
   };
 
   const handleToggle = () => {

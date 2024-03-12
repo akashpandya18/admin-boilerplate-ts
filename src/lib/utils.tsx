@@ -30,44 +30,22 @@ export function cn(...inputs: ClassValue[]) {
 }
 export const MaxCharlimit = 100;
 export const MaxCharlimitLongText = 1000;
-export const getLocalStorageItem = (key: string) => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem(key);
-  }
-  return null;
-};
-export const setLocalStorageItem = (key: string, value: string) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(key, value);
-  }
-};
-export const removeLocalStorageItem = (key: string) => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem(key);
-  }
-};
-export const cleanLocalStorage = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.clear();
-  }
-};
+export const getLocalStorageItem = (key: string) => localStorage.getItem(key);
 export const cleanCookies = () => {
-  if (typeof window !== 'undefined') {
-    deleteCookie('admin-token');
-    deleteCookie('refreshToken');
-    deleteCookie('admin-userData');
-    deleteCookie('deviceToken');
-  }
+  deleteCookie('admin-token');
+  deleteCookie('refreshToken');
+  deleteCookie('admin-userData');
+  deleteCookie('deviceToken');
 };
 export const getJWTToken = () => {
   const token = getCookie('admin-token');
-  if (typeof window !== 'undefined') {
+  if (token) {
     return 'Bearer ' + token;
   }
 };
 export const getDeviceToken = () => {
   const deviceToken = getCookie('deviceToken');
-  if (typeof window !== 'undefined') {
+  if (deviceToken) {
     return deviceToken;
   }
 };

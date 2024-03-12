@@ -7,20 +7,19 @@ import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { HiBars3, HiChevronDown } from 'react-icons/hi2';
 import {
-  cleanLocalStorage,
-  getLocalStorageItem,
   // errorToast,
   classNames,
   getJWTToken,
+  cleanCookies,
 } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 // import LazyLoadImageProp from '../common/LazyLoadImage';
 import { useSidebarStore } from '@/store/sidebarStore';
-import axios from 'axios';
 import BellStatic from '@/assets/bell-static.png';
 import Bell from '@/assets/bell.gif';
+import { getCookie } from 'cookies-next';
 // import NotificationPopup from '@/app/components/common/NotificationPopup';
 
 function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
@@ -31,9 +30,8 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   // const [showPopup, setShowPopup] = useState(false);
   // const [notificationData, setNotificationData] = useState({});
 
-  const userData =
-    getLocalStorageItem('userData') &&
-    JSON.parse(getLocalStorageItem('userData') as string);
+  const userDataMain = getCookie('userData');
+  const userData = userDataMain && JSON.parse(userDataMain);
 
   // isSupported()?.then((res) => {
   //   if (res) {
@@ -52,13 +50,8 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   // });
 
   const handleLogout = async () => {
-    const payload = {
-      isHeader: true,
-    };
-
     if (token) {
-      await axios.delete('/api/auth/logout', { data: JSON.stringify(payload) });
-      cleanLocalStorage();
+      cleanCookies();
       router.push('/login');
     }
   };
