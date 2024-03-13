@@ -20,11 +20,13 @@ import { useSidebarStore } from '@/store/sidebarStore';
 import BellStatic from '@/assets/bell-static.png';
 import Bell from '@/assets/bell.gif';
 import { getCookie } from 'cookies-next';
+import useAuthStore from '@/store/userStore';
 // import NotificationPopup from '@/app/components/common/NotificationPopup';
 
 function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   const router = useRouter();
   const token = getJWTToken();
+  const { clearTokens } = useAuthStore();
   const { isShow, setShow } = useSidebarStore();
   const [bellSrc, setBellSrc] = useState(BellStatic);
   // const [showPopup, setShowPopup] = useState(false);
@@ -52,6 +54,7 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   const handleLogout = async () => {
     if (token) {
       cleanCookies();
+      clearTokens();
       router.push('/login');
     }
   };

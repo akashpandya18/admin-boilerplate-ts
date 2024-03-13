@@ -13,6 +13,7 @@ import { FaXmark } from 'react-icons/fa6';
 import Pagination from '@/components/common/Pagination/Pagination';
 import { Api } from '@/app/api';
 import Table from '@/components/common/Table';
+import useAuthStore from '@/store/userStore';
 
 const pages = [{ name: 'Users', href: '/users' }];
 
@@ -73,6 +74,7 @@ const columns = [
 
 const Users = () => {
   const router = useRouter();
+  const { authToken, user } = useAuthStore();
 
   const [loader, setLoader] = useState(true);
   const [usersList, setUsersList] = useState([]);

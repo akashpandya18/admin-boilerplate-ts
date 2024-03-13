@@ -19,10 +19,12 @@ import LogStatic from '@/assets/logout-static.png';
 import Log from '@/assets/logout.gif';
 import Image from 'next/image';
 import packageJson from '../../../package.json';
+import useAuthStore from '@/store/userStore';
 
 function Sidebar() {
   const router = useRouter();
   const token = getJWTToken();
+  const { clearTokens } = useAuthStore();
   const { isShow, setShow } = useSidebarStore();
   const [logSrc, setLogSrc] = useState(LogStatic);
   const version = packageJson.version;
@@ -63,6 +65,7 @@ function Sidebar() {
   const handleLogout = async () => {
     if (token) {
       cleanCookies();
+      clearTokens();
       router.push('/login');
     }
   };

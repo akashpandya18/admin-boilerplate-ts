@@ -1,37 +1,23 @@
 import axios, { AxiosHeaders, AxiosRequestHeaders } from 'axios';
-import { cleanCookies } from '@/lib/utils';
 import { toast } from 'sonner';
-import { getCookie, getCookies, setCookie } from 'cookies-next';
-import { GetServerSidePropsContext } from 'next';
-import { TmpCookiesObj } from 'cookies-next/lib/types';
+import { getCookie, setCookie } from 'cookies-next';
+import useAuthStore from '@/store/userStore';
+import { cleanCookies } from '@/lib/utils';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
-const getAuthHeaders = (
-  context?: GetServerSidePropsContext
-): AxiosRequestHeaders => {
-  let cookies: TmpCookiesObj;
-
-  if (context) {
-    // Server-side rendering
-    cookies = getCookies(context);
-  } else {
-    // Client-side rendering
-    cookies = getCookies();
-  }
-
-  const jwtToken = cookies['jwtToken'];
-  const deviceToken = cookies['deviceToken'];
+const getAuthHeaders = (): AxiosRequestHeaders => {
+  const { authToken, deviceToken } = useAuthStore.getState();
 
   const headers: AxiosHeaders = new AxiosHeaders({
     'Content-Type': 'application/json',
     accept: 'application/json',
   });
 
-  if (jwtToken) {
-    headers.set('Authorization', jwtToken);
+  if (authToken) {
+    headers.set('Authorization', `Bearer ${authToken}`);
   }
 
   if (deviceToken) {
@@ -50,6 +36,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error?.response?.status === 401) {
+      useAuthStore.getState().clearTokens();
       cleanCookies();
       window.location.href = '/login';
       toast.error(error.meta.message);

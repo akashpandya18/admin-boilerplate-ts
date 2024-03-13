@@ -1,4 +1,3 @@
-// app/middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
 
 const PRIVATE_ROUTES: { path: string[] }[] = [
@@ -174,6 +173,4 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/users', url));
     }
   }
-
-  // return NextResponse.redirect(new URL(pathname, request.url));
 }

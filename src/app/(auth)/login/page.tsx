@@ -11,8 +11,10 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Api } from '@/app/api';
 import { setCookie, getCookie } from 'cookies-next';
+import useAuthStore from '@/store/userStore';
 
 const Login = () => {
+  const { setAuthToken, setUser } = useAuthStore();
   const router = useRouter();
   const [form, setForm] = useState({
     email: '',
@@ -64,10 +66,12 @@ const Login = () => {
           maxAge: 60 * 60 * 24 * 3,
           path: '/',
         });
+        setAuthToken(response.meta.token);
         setCookie('admin-userData', JSON.stringify(response.data), {
           maxAge: 60 * 60 * 24 * 3,
           path: '/',
         });
+        setUser(response.data);
         router.push('/users');
       }
     } catch (error) {
