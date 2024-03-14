@@ -43,13 +43,13 @@ const Layout = ({ children }: props) => {
   const { width } = useWindowDimensions();
 
   const [leftPanelDimension, setLeftPanelDimesion] = useState({
-    defaultSize: 4,
+    defaultSize: width > 1024 ? 16 : 4,
     collapsedSize: 4,
     minSize: 16,
     maxSize: 16,
   });
   const [rightPanelDimension, setRightPanelDimesion] = useState({
-    defaultSize: 96,
+    defaultSize: width > 1024 ? 84 : 96,
   });
 
   useEffect(() => {
@@ -87,12 +87,12 @@ const Layout = ({ children }: props) => {
       setRightPanelDimesion({ defaultSize: currentShow ? 70 : 96 });
     } else {
       setLeftPanelDimesion({
-        defaultSize: currentShow ? 60 : 4,
+        defaultSize: currentShow ? 40 : 4,
         collapsedSize: 4,
-        minSize: 55,
-        maxSize: 60,
+        minSize: 18,
+        maxSize: 40,
       });
-      setRightPanelDimesion({ defaultSize: currentShow ? 40 : 96 });
+      setRightPanelDimesion({ defaultSize: currentShow ? 60 : 96 });
     }
   }, [currentDimensions.width, width]);
 

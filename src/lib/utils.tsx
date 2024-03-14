@@ -280,7 +280,6 @@ export const useWindowDimensions = () => {
 
   return windowDimensions;
 };
-
 export const getFileType = (value: { name: string; type: string }) => {
   const fileExtension = value?.name?.split('.');
   const finalType = `${value?.type?.split('/')[0]}/${
