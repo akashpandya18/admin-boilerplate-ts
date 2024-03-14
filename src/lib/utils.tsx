@@ -11,7 +11,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast';
+import { toast } from 'sonner';
 import { DEADOMAINS } from './dead-domains';
 import { HiInformationCircle } from 'react-icons/hi';
 import {
@@ -121,7 +121,7 @@ export const getContentType = (type: string) => {
 };
 
 export const ErrorToast = (
-  msg: Renderable | ValueFunction<Renderable, Toast>,
+  msg: string | number | boolean | null | undefined,
   toastId = ''
 ) =>
   toast.error(msg, {
@@ -130,12 +130,9 @@ export const ErrorToast = (
   });
 
 export const SuccessToast = (
-  msg: Renderable | ValueFunction<Renderable, Toast>,
+  msg: string | number | boolean | null | undefined,
   duration = 2000
-) =>
-  toast.success(msg, {
-    duration,
-  });
+) => toast.success(msg, { duration });
 
 export const informativeToast = (
   msg:
@@ -147,13 +144,15 @@ export const informativeToast = (
     | ReactPortal
     | null
     | undefined,
-  duration = 3000
+  duration = 3000,
+  visible: boolean
 ) =>
   toast.custom(
     (t) => (
       <div
+        key={t}
         className={`${
-          t.visible ? 'animate-enter' : 'animate-leave'
+          visible ? 'animate-enter' : 'animate-leave'
         } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
       >
         <div className='flex-1 w-0 p-2'>

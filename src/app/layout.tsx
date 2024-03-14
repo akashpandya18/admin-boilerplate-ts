@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         )}
       >
         <Toast />
-        <Toaster richColors theme='light' closeButton={true} />
+        <Toaster richColors theme='light' closeButton={true} duration={2000} />
         {children}
       </body>
     </html>

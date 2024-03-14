@@ -6,7 +6,6 @@ interface UserData {
   name: string;
   email: string;
 }
-
 interface AuthState {
   authToken: string | null;
   deviceToken: string | null;

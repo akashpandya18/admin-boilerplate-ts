@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 'use client';
 
 import React, { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import {
-  // ErrorToast,
+  ErrorToast,
   getAccountType,
   getContentType,
   getSentToUser,
   getUserType,
-  // SuccessToast,
+  SuccessToast,
 } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import {
@@ -35,13 +33,13 @@ import {
 } from '@/components/ui/tooltip';
 import { CONTENT_APPROVAL_TYPE } from '@/lib/constants';
 import { Listbox, Transition } from '@headlessui/react';
-import Loader from './Loader';
 import LazyLoadImageProp from './LazyLoadImage';
 import FocusPopup from './modals/FocusPopup';
 import Image from 'next/image';
 import DeletePopup from './modals/DeletePopup';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { Api } from '@/app/api';
 
 interface TableProps {
   columns: any;
@@ -51,7 +49,6 @@ interface TableProps {
   name: string;
   setSortBy: any;
   refreshTable: any;
-  loader: boolean;
   setSearchTerm: any;
   message?: string;
 }
@@ -64,12 +61,10 @@ const Table = ({
   name,
   setSortBy,
   refreshTable,
-  loader,
   setSearchTerm,
   message,
 }: TableProps) => {
   const router = useRouter();
-
   const checkbox = useRef<any>({ indeterminate: false });
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
@@ -463,43 +458,40 @@ const Table = ({
     setIdToDelete('');
   };
 
-  // const userTableBulk = () => {
-  //   // const payload = {
-  //   //   ids: selectedData,
-  //   //   status: `${actionType}`,
-  //   // };
-  //   // TODO: new call method when api is ready
-  //   // Api.postUserBulkAction(payload).then((response) => {
-  //   //   if (response.meta.code === 1) {
-  //   //     successToast(response.meta.message);
-  //   //     setSelectedData([]);
-  //   //     setChecked(false);
-  //   //     setIndeterminate(false);
-  //   //     refreshTable();
-  //   //   } else if (response.meta.code === 0) {
-  //   //     errorToast(response.meta.message);
-  //   //   }
-  //   // });
-  // };
+  const userTableBulk = async () => {
+    const payload = {
+      ids: selectedData,
+      status: `${actionType}`,
+    };
+    const response = await Api.postUserBulkAction(payload);
+    if (response) {
+      SuccessToast(response.data.meta.message);
+      setSelectedData([]);
+      setChecked(false);
+      setIndeterminate(false);
+      refreshTable();
+    } else {
+      ErrorToast(response.data.meta.message);
+    }
+  };
 
-  // const gymTableBulk = () => {
-  //   // const payload = {
-  //   //   ids: selectedData,
-  //   //   status: `${actionType}`,
-  //   // };
-  //   // TODO: new call method when api is ready
-  //   // Api.postGymBulkAction(payload).then((response) => {
-  //   //   if (response.meta.code === 1) {
-  //   //     successToast(response.meta.message);
-  //   //     setSelectedData([]);
-  //   //     setChecked(false);
-  //   //     setIndeterminate(false);
-  //   //     refreshTable();
-  //   //   } else if (response.meta.code === 0) {
-  //   //     errorToast(response.meta.message);
-  //   //   }
-  //   // });
-  // };
+  const gymTableBulk = async () => {
+    const payload = {
+      ids: selectedData,
+      status: `${actionType}`,
+    };
+    const response = await Api.postGymBulkAction(payload);
+
+    if (response) {
+      SuccessToast(response.data.meta.message);
+      setSelectedData([]);
+      setChecked(false);
+      setIndeterminate(false);
+      refreshTable();
+    } else {
+      ErrorToast(response.data.meta.message);
+    }
+  };
 
   // const otherBulk = () => {
   //   const payload = {
@@ -509,13 +501,13 @@ const Table = ({
   //   };
   //   Api.postBulkAction(payload).then((response) => {
   //     if (response.data.meta.code === 1) {
-  //       successToast(response.data.meta.message);
+  //       SuccessToast(response.data.meta.message);
   //       setSelectedData([]);
   //       setChecked(false);
   //       setIndeterminate(false);
   //       refreshTable();
   //     } else if (response.data.meta.code === 0) {
-  //       errorToast(response.data.meta.message);
+  //       ErrorToast(response.data.meta.message);
   //     }
   //   });
   // };
@@ -523,18 +515,18 @@ const Table = ({
   const handleBulkOperation = () => {
     setBulkOperationPopup(false);
     setSearchTerm('');
-    // switch (name) {
-    //   case 'users_table':
-    //     userTableBulk();
-    //     break;
+    switch (name) {
+      case 'users_table':
+        userTableBulk();
+        break;
 
-    //   // case 'gym_table':
-    //   //   gymTableBulk();
-    //   //   break;
-    //   default:
-    //     // otherBulk();
-    //     break;
-    // }
+      case 'gym_table':
+        gymTableBulk();
+        break;
+      default:
+        // otherBulk();
+        break;
+    }
   };
 
   const handleResendNotification = (e: any, row: any) => {
@@ -659,95 +651,81 @@ const Table = ({
                   </tr>
                 </thead>
                 <tbody className='divide-y divide-[#EAEAEA] bg-white'>
-                  {loader ? (
+                  {data.length > 0 ? (
+                    data.map((data: any, index: number) => (
+                      <tr key={index}>
+                        {columns?.map((column: any, index1: number) => {
+                          return (
+                            <Fragment key={index1}>
+                              {column.type === 'checkBox' ? (
+                                <td className='relative w-12 px-6 sm:w-16 sm:px-8'>
+                                  {selectedData.includes(data.id) && (
+                                    <div className='absolute inset-y-0 left-0 w-0.5 bg-admin-primary' />
+                                  )}
+                                  <Input
+                                    type='checkbox'
+                                    className='absolute w-4 h-4 -mt-2 border-gray-300 rounded cursor-pointer left-4 top-1/2 accent-admin-primary sm:left-6'
+                                    value={data.id}
+                                    checked={selectedData.includes(data.id)}
+                                    onChange={(e) =>
+                                      setSelectedData(
+                                        e.target.checked
+                                          ? [...selectedData, data.id]
+                                          : selectedData.filter(
+                                              (p) => p !== data.id
+                                            )
+                                      )
+                                    }
+                                  />
+                                </td>
+                              ) : (
+                                <td
+                                  key={index}
+                                  className={`whitespace-nowrap ${
+                                    column.align === 'left'
+                                      ? 'text-left'
+                                      : column.align == 'center'
+                                        ? 'text-center'
+                                        : 'text-right'
+                                  } p-3 text-sm text-[#606060] ${
+                                    column.transform
+                                      ? column.transform
+                                      : 'capitalize'
+                                  }`}
+                                >
+                                  {column?.nested
+                                    ? formattedData(
+                                        data,
+                                        data[column.key1]?.[column.key2],
+                                        column.type,
+                                        column
+                                      )
+                                    : formattedData(
+                                        data,
+                                        data[column.key],
+                                        column.type,
+                                        column
+                                      )}
+                                </td>
+                              )}
+                            </Fragment>
+                          );
+                        })}
+                      </tr>
+                    ))
+                  ) : (
                     <tr>
-                      <td>
-                        <Loader />
+                      <td colSpan={columns.length}>
+                        <div className='py-[20px] bg-white border-t border-[#EAEAEA] w-full'>
+                          <NoDataFoundImg
+                            className={`m-auto text-indigo-50 border border-admin-blue rounded-lg`}
+                          />
+                          <p className='mt-3 text-sm text-center text-admin-gray4'>
+                            No results
+                          </p>
+                        </div>
                       </td>
                     </tr>
-                  ) : (
-                    <>
-                      {data?.length > 0 ? (
-                        data?.map((data: any, index: number) => {
-                          return (
-                            <tr key={index}>
-                              {columns?.map((column: any, index1: number) => {
-                                return (
-                                  <Fragment key={index1}>
-                                    {column.type === 'checkBox' ? (
-                                      <td className='relative w-12 px-6 sm:w-16 sm:px-8'>
-                                        {selectedData.includes(data.id) && (
-                                          <div className='absolute inset-y-0 left-0 w-0.5 bg-admin-primary' />
-                                        )}
-                                        <Input
-                                          type='checkbox'
-                                          className='absolute w-4 h-4 -mt-2 border-gray-300 rounded cursor-pointer left-4 top-1/2 accent-admin-primary sm:left-6'
-                                          value={data.id}
-                                          checked={selectedData.includes(
-                                            data.id
-                                          )}
-                                          onChange={(e) =>
-                                            setSelectedData(
-                                              e.target.checked
-                                                ? [...selectedData, data.id]
-                                                : selectedData.filter(
-                                                    (p) => p !== data.id
-                                                  )
-                                            )
-                                          }
-                                        />
-                                      </td>
-                                    ) : (
-                                      <td
-                                        key={index}
-                                        className={`whitespace-nowrap ${
-                                          column.align === 'left'
-                                            ? 'text-left'
-                                            : column.align == 'center'
-                                              ? 'text-center'
-                                              : 'text-right'
-                                        } p-3 text-sm text-[#606060] ${
-                                          column.transform
-                                            ? column.transform
-                                            : 'capitalize'
-                                        }`}
-                                      >
-                                        {column?.nested
-                                          ? formattedData(
-                                              data,
-                                              data[column.key1]?.[column.key2],
-                                              column.type,
-                                              column
-                                            )
-                                          : formattedData(
-                                              data,
-                                              data[column.key],
-                                              column.type,
-                                              column
-                                            )}
-                                      </td>
-                                    )}
-                                  </Fragment>
-                                );
-                              })}
-                            </tr>
-                          );
-                        })
-                      ) : (
-                        <tr>
-                          <td colSpan={columns.length}>
-                            <div className='py-[20px] bg-white border-t border-[#EAEAEA] w-full'>
-                              <NoDataFoundImg
-                                className={`m-auto text-indigo-50 border border-admin-blue rounded-lg`}
-                              />
-                              <p className='mt-3 text-sm text-center text-admin-gray4'>
-                                No results
-                              </p>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </>
                   )}
                 </tbody>
               </table>

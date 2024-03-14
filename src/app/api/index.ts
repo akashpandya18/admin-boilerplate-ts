@@ -43,26 +43,30 @@ api.interceptors.response.use(
       return Promise.reject(error.meta.message);
     }
     if (error?.response?.status === 403) {
-      return Promise.reject(error);
+      toast.error('Forbidden');
+      return Promise.reject(error.meta.message);
     }
     if (error?.response?.status === 400) {
       toast.error(error.response.data.meta.message);
       return Promise.reject(error.response.data.meta.message);
     }
     if (error?.response?.status === 404) {
+      toast.error('Not Found');
       return Promise.reject(error);
     }
     if (error?.response?.status === 406) {
-      return Promise.reject(error);
+      toast.error('Not Acceptable');
+      return Promise.reject(error.response.data.meta.message);
     }
     if (error?.response?.status === 498) {
       RefreshToken();
-      return Promise.reject(error);
+      toast.error('Token Expired');
+      return Promise.reject(error.response.data.meta.message);
     }
     if (error?.response?.status === 500) {
+      toast.error('Internal Server Error');
       return Promise.reject(error);
     }
-
     toast.error('Something went wrong');
     return Promise.reject(error);
   }
@@ -113,7 +117,7 @@ export const Api = {
     page = 1,
     per_page = 10,
     search = '',
-    sort_by = 'first_name',
+    sort_by = 'created_at',
     sort_type = 'DESC'
   ) =>
     GetApi(
