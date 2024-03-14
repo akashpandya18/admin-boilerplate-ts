@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
 import { usePathname } from 'next/navigation';
-import { useSidebarStore } from '@/store/sidebarStore';
+import useSidebarStore from '@/store/sidebarStore';
 import { classNames } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';

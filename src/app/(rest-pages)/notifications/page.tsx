@@ -11,6 +11,7 @@ import LazyLoadImageProp from '@/components/common/LazyLoadImage';
 import { HiTrash } from 'react-icons/hi2';
 import NoDataFoundImg from '@/assets/images/no-data-found.svg';
 import axios from 'axios';
+import { Api } from '@/app/api';
 
 const pages = [
   { name: 'Notifications', href: '/notifications', current: true },
@@ -27,38 +28,33 @@ function Notification() {
   const [deleteType, setDeleteType] = useState('');
 
   const handlePagination = async (
-    pageNumber: SetStateAction<number>,
+    pageNumber: number,
     pageSize: number,
     searchKey: string
   ) => {
     setLoader(true);
 
     try {
-      const notifRes = await axios.get(
-        `/api/admin/notifications?type=2&page=${pageNumber}&perPage=${pageSize}&searchKey=${searchKey}`
+      const notifRes = await Api.getAllNotifications(
+        pageNumber,
+        pageSize,
+        searchKey
       );
 
       const response = notifRes.data;
 
       if (response) {
-        if (response?.data?.meta?.code === 1) {
-          setCurrentPage(pageNumber);
-          setNotificationList(response?.data?.data);
-          setTotalCount(response?.data?.meta?.totalNotifications);
-          setLoader(false);
-        } else if (response?.data?.meta?.code === 0) {
-          setCurrentPage(1);
-          setNotificationList([]);
-          setTotalCount(0);
-          setLoader(false);
-          ErrorToast(response?.data?.meta?.message);
-        } else {
-          setLoader(false);
-        }
+        setCurrentPage(pageNumber);
+        setNotificationList(response?.data?.data);
+        setTotalCount(response?.data?.meta?.totalNotifications);
+        setLoader(false);
       }
     } catch (error: any) {
+      setCurrentPage(1);
+      setNotificationList([]);
+      setTotalCount(0);
       setLoader(false);
-      ErrorToast(error?.response?.data?.message);
+      ErrorToast("Couldn't fetch notifications");
     }
   };
 

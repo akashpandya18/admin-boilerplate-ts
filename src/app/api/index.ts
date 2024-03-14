@@ -146,6 +146,17 @@ export const Api = {
   addEditGym: (reqBody: any) => PostApi(`/admin/v1/gym`, reqBody),
   getGymById: (id: any) => GetApi(`/admin/v1/gym/${id}`),
   deleteGym: (id: any) => DeleteApi(`/admin/v1/gym?id=${id}`),
+
+  // notification
+  getAllNotifications: (
+    pageNumber: number,
+    pageSize: number,
+    searchKey: string
+  ) =>
+    GetApi(
+      `/api/admin/notifications?type=2&page=${pageNumber}&perPage=${pageSize}&searchKey=${searchKey}`
+    ),
+
   // logout
   logoutUser: () => DeleteApi(`/`),
   adminAccess: () => GetApi(`/`),

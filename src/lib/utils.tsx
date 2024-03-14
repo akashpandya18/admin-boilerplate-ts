@@ -242,7 +242,7 @@ export const getGender = (type: any, flag: any) => {
   }
 };
 
-function getWindowDimensions() {
+export function getWindowDimensions() {
   if (typeof window !== 'undefined') {
     const { innerWidth: width, innerHeight: height } = window;
     return {

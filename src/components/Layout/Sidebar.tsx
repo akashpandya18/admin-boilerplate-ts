@@ -13,7 +13,7 @@ import Log from '@/assets/logout.gif';
 import Image from 'next/image';
 import packageJson from '../../../package.json';
 import useAuthStore from '@/store/userStore';
-import { useSidebarStore } from '@/store/sidebarStore';
+import useSidebarStore from '@/store/sidebarStore';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function Sidebar() {
@@ -97,11 +97,13 @@ function Sidebar() {
           </div>
         )}
 
-        <div className='absolute w-full px-4 py-2 border-t bottom-14 border-admin-sidebarBorder group'>
+        <div
+          className={`absolute w-full py-2 border-t px-2 bottom-14 border-admin-sidebarBorder group`}
+        >
           <div
             onMouseEnter={() => setLogSrc(Log)}
             onMouseLeave={() => setLogSrc(LogStatic)}
-            className={`flex items-center justify-start p-2 gap-x-2 rounded-md cursor-pointer group-hover:bg-white`}
+            className={`flex items-center ${currentShow ? 'justify-start' : 'justify-center'} p-2 gap-x-2 rounded-md cursor-pointer group-hover:bg-white`}
             onClick={handleLogout}
           >
             <Image src={logSrc} alt='logout_icon' height={30} width={30} />
