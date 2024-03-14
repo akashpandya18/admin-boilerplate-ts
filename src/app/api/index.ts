@@ -47,12 +47,12 @@ api.interceptors.response.use(
       return Promise.reject(error.meta.message);
     }
     if (error?.response?.status === 400) {
-      toast.error(error.response.data.meta.message);
+      toast.error('Bad Request');
       return Promise.reject(error.response.data.meta.message);
     }
     if (error?.response?.status === 404) {
       toast.error('Not Found');
-      return Promise.reject(error);
+      return Promise.reject(error.response.data.meta.message);
     }
     if (error?.response?.status === 406) {
       toast.error('Not Acceptable');
@@ -65,10 +65,10 @@ api.interceptors.response.use(
     }
     if (error?.response?.status === 500) {
       toast.error('Internal Server Error');
-      return Promise.reject(error);
+      return Promise.reject(error.response.data.meta.message);
     }
     toast.error('Something went wrong');
-    return Promise.reject(error);
+    return Promise.reject(error.response.data.meta.message);
   }
 );
 

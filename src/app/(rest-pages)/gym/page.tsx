@@ -96,16 +96,13 @@ function Gym() {
         setPage(pageN);
         setTotalCount(response?.length);
         setLoader(false);
-      } else {
-        setPage(1);
-        setGymList([]);
-        setTotalCount(0);
-        ErrorToast(response?.data?.meta?.message);
-        setLoader(false);
       }
     } catch (error: any) {
+      setPage(1);
+      setGymList([]);
+      setTotalCount(0);
       setLoader(false);
-      ErrorToast(error?.response?.statusText);
+      ErrorToast("Couldn't fetch gym details. Something went wrong.");
     }
   };
 
@@ -155,13 +152,10 @@ function Gym() {
       if (response) {
         handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
         SuccessToast(response?.data?.meta?.message);
-      } else {
-        setLoader(false);
-        ErrorToast(response?.data?.meta?.message);
       }
     } catch (error: any) {
       setLoader(false);
-      ErrorToast(error);
+      ErrorToast("Couldn't delete gym. Something went wrong.");
     }
   };
 

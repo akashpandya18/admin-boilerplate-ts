@@ -1,16 +1,9 @@
 'use client';
 
-import { Fragment, useState, useEffect } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import {
-  cleanCookies,
-  // getLocalStorageItem,
-  getJWTToken,
-} from '@/lib/utils';
-import Menu from './Menu';
+import { useState, useEffect } from 'react';
+import { cleanCookies, getJWTToken } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { useSidebarStore } from '@/store/sidebarStore';
-import { HiChevronDoubleLeft } from 'react-icons/hi2';
+import Menu from './Menu';
 import userIcon from '@/assets/user.gif';
 import userStatic from '@/assets/user-static.png';
 import gymIcon from '@/assets/gym.gif';
@@ -20,17 +13,17 @@ import Log from '@/assets/logout.gif';
 import Image from 'next/image';
 import packageJson from '../../../package.json';
 import useAuthStore from '@/store/userStore';
+import { useSidebarStore } from '@/store/sidebarStore';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function Sidebar() {
   const router = useRouter();
   const token = getJWTToken();
-  const { clearTokens } = useAuthStore();
-  const { isShow, setShow } = useSidebarStore();
+  const { user, clearTokens } = useAuthStore();
   const [logSrc, setLogSrc] = useState(LogStatic);
+  const { currentShow } = useSidebarStore();
   const version = packageJson.version;
-  // const userData =
-  // getLocalStorageItem('userData') &&
-  // JSON.parse(getLocalStorageItem('userData'));
+
   const [sidebarData, setSidebarData] = useState<
     {
       name: string;
@@ -42,25 +35,25 @@ function Sidebar() {
   >([]);
 
   useEffect(() => {
-    // if (userData?.id) {
-    // }
-    setSidebarData([
-      {
-        name: 'Users',
-        href: '/users',
-        icon: userIcon,
-        access: true,
-        staticIcon: userStatic,
-      },
-      {
-        name: 'Gym',
-        href: '/gym',
-        icon: gymIcon,
-        access: true,
-        staticIcon: staticGym,
-      },
-    ]);
-  }, []);
+    if (user?.id) {
+      setSidebarData([
+        {
+          name: 'Users',
+          href: '/users',
+          icon: userIcon,
+          access: true,
+          staticIcon: userStatic,
+        },
+        {
+          name: 'Gym',
+          href: '/gym',
+          icon: gymIcon,
+          access: true,
+          staticIcon: staticGym,
+        },
+      ]);
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     if (token) {
@@ -70,87 +63,56 @@ function Sidebar() {
     }
   };
 
-  const handleToggle = () => {
-    setShow(!isShow);
-  };
-
   return (
-    <div>
-      <Transition.Root show={isShow || false} as={Fragment}>
-        <Dialog as='div' className='relative' onClose={() => null}>
-          <Transition.Child
-            as={Fragment}
-            enter='ease-out duration-300'
-            enterFrom='opacity-0'
-            enterTo='opacity-100'
-            leave='ease-in duration-200'
-            leaveFrom='opacity-100'
-            leaveTo='opacity-0'
+    <div className={`block relative`}>
+      <div className='absolute z-50 flex flex-col w-full h-screen bg-gradient-to-b from-admin-primary to-admin-sidebarBackground'>
+        <div
+          className={`flex items-center justify-between ${currentShow ? 'p-6' : 'py-6 px-2 mx-auto'}`}
+        >
+          {currentShow ? (
+            <p className='text-2xl font-semibold text-white capitalize'>
+              Admin Panel
+            </p>
+          ) : (
+            <Avatar>
+              <AvatarImage src='https://github.com/vercel.png' />
+              <AvatarFallback>AP</AvatarFallback>
+            </Avatar>
+          )}
+        </div>
+
+        <nav className='mt-4 space-y-3'>
+          {sidebarData?.map((item, index) =>
+            !item?.access ? '' : <Menu key={index} item={item} />
+          )}
+        </nav>
+
+        {currentShow ? (
+          <div className='absolute bottom-0 flex justify-start w-full px-6 py-4 text-sm text-admin-gray2'>
+            Version: {version}
+          </div>
+        ) : (
+          <div className='absolute bottom-0 flex justify-center w-full p-2 text-sm text-admin-gray2'>
+            <p className='text-sm font-medium text-white'>V {version}</p>
+          </div>
+        )}
+
+        <div className='absolute w-full px-4 py-2 border-t bottom-14 border-admin-sidebarBorder group'>
+          <div
+            onMouseEnter={() => setLogSrc(Log)}
+            onMouseLeave={() => setLogSrc(LogStatic)}
+            className={`flex items-center justify-start p-2 gap-x-2 rounded-md cursor-pointer group-hover:bg-white`}
+            onClick={handleLogout}
           >
-            <Dialog.Overlay className='fixed inset-0 lg:block lg:inset-full lg:bg-transparent lg:bg-opacity-0' />
-          </Transition.Child>
-
-          <Transition.Child
-            as={Fragment}
-            enter='ease-out duration-300'
-            enterFrom='opacity-0 translate-x-[-100%]'
-            enterTo='opacity-100 translate-x-0'
-            leave='ease-in duration-200'
-            leaveFrom='opacity-100 translate-x-0'
-            leaveTo='opacity-0 translate-x-[-100%]'
-          >
-            <div className='fixed top-0 bottom-0 flex w-[260px] flex-1 flex-col bg-gradient-to-b from-admin-primary to-admin-sidebarBackground z-50'>
-              <div className='flex-1 h-0 overflow-y-auto sidebar-container'>
-                <div className='flex justify-between w-[260px] flex-shrink-0 fixed top-0 left-0 items-center px-4 h-[87px] '>
-                  <p className='text-2xl font-semibold text-white capitalize'>
-                    {/* {userData?.name}  */}
-                    Admin Panel
-                  </p>
-                  <HiChevronDoubleLeft
-                    className='w-6 h-6 text-white cursor-pointer'
-                    onClick={handleToggle}
-                  />
-                </div>
-
-                <nav className='space-y-3 mt-[100px] mb-[15px]'>
-                  {sidebarData?.map((item, index) =>
-                    !item?.access ? '' : <Menu key={index} item={item} />
-                  )}
-                </nav>
-              </div>
-
-              <span className='flex px-6 py-4 text-sm text-admin-gray2'>
-                Version: {version}
-              </span>
-
-              <div className='flex flex-shrink-0 p-4 border-t border-admin-sidebarBorder'>
-                <div
-                  onMouseEnter={() => setLogSrc(Log)}
-                  onMouseLeave={() => setLogSrc(LogStatic)}
-                  className='flex-shrink-0 block w-full cursor-pointer group'
-                  onClick={handleLogout}
-                >
-                  <div className='flex items-center'>
-                    <div className='group-hover:bg-white p-3 rounded-[50%]'>
-                      <Image
-                        src={logSrc}
-                        alt='logout_icon'
-                        height={24}
-                        width={24}
-                        className={`h-6 w-6 text-admin-primary hover:rounded-full`}
-                      />
-                      {/* <HiArrowRightOnRectangle className='w-[20px] text-white' /> */}
-                    </div>
-                    <div className='ml-3'>
-                      <p className='text-sm font-medium text-white'>Logout</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Transition.Child>
-        </Dialog>
-      </Transition.Root>
+            <Image src={logSrc} alt='logout_icon' height={30} width={30} />
+            {currentShow && (
+              <p className='text-base font-medium text-white group-hover:text-admin-primary'>
+                Logout
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

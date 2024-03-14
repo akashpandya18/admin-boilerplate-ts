@@ -5,7 +5,7 @@
 // import { onMessageListener, requestForToken } from '../firebase';
 import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { HiBars3, HiChevronDown } from 'react-icons/hi2';
+import { HiChevronDown } from 'react-icons/hi2';
 import {
   // errorToast,
   classNames,
@@ -16,7 +16,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 // import LazyLoadImageProp from '../common/LazyLoadImage';
-import { useSidebarStore } from '@/store/sidebarStore';
 import BellStatic from '@/assets/bell-static.png';
 import Bell from '@/assets/bell.gif';
 import { getCookie } from 'cookies-next';
@@ -27,7 +26,6 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   const router = useRouter();
   const token = getJWTToken();
   const { clearTokens } = useAuthStore();
-  const { isShow, setShow } = useSidebarStore();
   const [bellSrc, setBellSrc] = useState(BellStatic);
   // const [showPopup, setShowPopup] = useState(false);
   // const [notificationData, setNotificationData] = useState({});
@@ -63,16 +61,9 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   return (
     <>
       <div
-        className={`px-4 h-[88px] py-2 bg-white flex items-center justify-between fixed left-0 right-0 top-0 z-30 w-full border-b`}
+        className={`px-4 h-[88px] py-2 bg-white flex items-center justify-between absolute left-0 right-0 top-0 z-30 w-auto border-b`}
       >
-        <div className='flex items-center justify-between mb-4'>
-          {!isShow && (
-            <HiBars3
-              className='self-center w-6 h-6 mr-3 cursor-pointer text-admin-customGray'
-              onClick={() => setShow(true)}
-            />
-          )}
-        </div>
+        <div />
         <div className='flex h-[88px]'>
           <div className='self-center border-r border-[#ECECEC] px-7 mx-7'>
             <div

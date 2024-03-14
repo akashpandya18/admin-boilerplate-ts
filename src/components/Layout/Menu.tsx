@@ -1,12 +1,12 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
-import { Transition } from '@headlessui/react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { classNames } from '@/lib/utils';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const subMenu: {
   name: string;
@@ -145,8 +145,7 @@ const subMenu: {
 
 const Menu = ({ item }: { item: any }) => {
   const pathname = usePathname();
-  const router = useRouter();
-  const { setShow } = useSidebarStore();
+  const { currentShow } = useSidebarStore();
   const [src, setSrc] = useState(item.staticIcon);
 
   const getStatus = () => {
@@ -155,31 +154,24 @@ const Menu = ({ item }: { item: any }) => {
 
   const [showSubMenu, isShowSubMenu] = useState(getStatus());
 
-  const handleRedirect = (link: string) => {
-    if (window.innerWidth < 1024) {
-      setShow(false);
-    }
-    router.push(link);
-  };
-
   return (
     <>
-      <div
+      <Link
         key={item.name}
-        onClick={() => {
+        href={
           item.href !== '#'
             ? item.href === 'isDropDown'
               ? isShowSubMenu(!showSubMenu)
-              : handleRedirect(item.href)
-            : undefined;
-        }}
+              : item.href
+            : undefined
+        }
         onMouseEnter={() => setSrc(item.icon)}
         onMouseLeave={() => setSrc(item.staticIcon)}
         className={classNames(
           pathname.includes(item.href)
-            ? 'bg-gradient-to-r from-white to-gray-50 cursor-pointer text-admin-primary font-semibold'
-            : 'hover:bg-gradient-to-r hover:from-white hover:to-gray-100/90 cursor-pointer text-white',
-          'group outline-none mx-2 flex hover:text-admin-primary items-center py-3 px-2 text-sm font-normal rounded-md'
+            ? 'bg-white cursor-pointer text-admin-primary font-semibold'
+            : 'hover:bg-white cursor-pointer text-white',
+          'group outline-none mx-2 flex hover:text-admin-primary items-center p-2 text-sm font-normal rounded-md'
         )}
       >
         <Image
@@ -187,35 +179,28 @@ const Menu = ({ item }: { item: any }) => {
           alt='sidebar_icon'
           height={30}
           width={30}
-          className={`mr-3 ml-2 flex-shrink-0 text-white hover:rounded-full`}
+          className={`${currentShow ? 'mr-3 ml-2' : 'm-auto'} text-white hover:rounded-full`}
         />
 
-        {item.name}
-        {item.isDropDown &&
+        {currentShow && item.name}
+        {currentShow &&
+          item.isDropDown &&
           (showSubMenu ? (
             <HiChevronUp className='w-5 h-5 ml-2' />
           ) : (
             <HiChevronDown className='w-5 h-5 ml-2' />
           ))}
-      </div>
+      </Link>
       {item.isDropDown && showSubMenu && (
-        <Transition
-          as={Fragment}
-          enter='transition ease-out duration-100'
-          enterFrom='transform opacity-0 scale-95'
-          enterTo='transform opacity-100 scale-100'
-          leave='transition ease-in duration-75'
-          leaveFrom='transform opacity-100 scale-100'
-          leaveTo='transform opacity-0 scale-95'
-        >
-          <div className='px-2 py-2 space-y-2 text-white bg-admin-subMenuBackground'>
+        <div className='transition-all duration-300 ease-in-out'>
+          <nav className='px-2 py-2 space-y-2 text-white bg-admin-subMenuBackground'>
             {item.subMenu?.map((innerItem: any, index: number) => {
               return !innerItem.show ? (
                 ''
               ) : (
-                <div
+                <Link
                   key={index}
-                  onClick={() => handleRedirect(innerItem.href)}
+                  href={innerItem.href}
                   className={classNames(
                     pathname?.includes(innerItem.href)
                       ? 'bg-gradient-to-r from-admin-primary to-admin-secondary cursor-pointer'
@@ -224,11 +209,11 @@ const Menu = ({ item }: { item: any }) => {
                   )}
                 >
                   {innerItem.name}
-                </div>
+                </Link>
               );
             })}
-          </div>
-        </Transition>
+          </nav>
+        </div>
       )}
     </>
   );

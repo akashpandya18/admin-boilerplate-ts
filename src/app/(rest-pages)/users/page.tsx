@@ -104,16 +104,13 @@ const Users = () => {
         setPage(pageN);
         setTotalCount(res.length);
         setLoader(false);
-      } else {
-        setUsersList([]);
-        setPage(1);
-        setTotalCount(0);
-        setLoader(false);
-        ErrorToast(res?.data?.meta?.message);
       }
     } catch (error: any) {
+      setUsersList([]);
+      setPage(1);
+      setTotalCount(0);
       setLoader(false);
-      ErrorToast(error?.response?.statusText);
+      ErrorToast("Couldn't fetch users. Something went wrong.");
     }
   };
 
@@ -150,17 +147,12 @@ const Users = () => {
       const delRes = await Api.deleteUser(id);
       const response = delRes.data;
       if (response) {
-        if (response) {
-          handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
-          SuccessToast(response?.data?.meta?.message);
-        } else {
-          setLoader(false);
-          ErrorToast(response?.data?.meta?.message);
-        }
+        handlePagination(1, selectedPerPage?.value, '', sortBy, sortType);
+        SuccessToast(response?.data?.meta?.message);
       }
     } catch (error: any) {
       setLoader(false);
-      ErrorToast(error?.response?.data?.message);
+      ErrorToast("Couldn't delete user. Something went wrong.");
     }
   };
 
@@ -243,7 +235,6 @@ const Users = () => {
                 // bottomBorder={totalCount > selectedPerPage?.value}
                 refreshTable={refreshTable}
                 setSortBy={(sort: string) => handleSortBy(sort)}
-                loader={loader}
                 setSearchTerm={(data: SetStateAction<string>) =>
                   setSearch(data)
                 }
