@@ -2,22 +2,18 @@
 
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import {
   cleanCookies,
   cn,
   getJWTToken,
-  getWindowDimensions,
   useWindowDimensions,
 } from '@/lib/utils';
 import Header from './Header';
 import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable';
 import useSidebarStore from '@/store/sidebarStore';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 type props = {
   children: React.ReactNode;
@@ -34,67 +30,23 @@ const LoadSideBar = () => {
   );
 };
 
+const LoadSideBarMobile = () => {
+  const pathname = usePathname();
+  return (
+    <SheetContent side='left' className='p-0 bg-transparent'>
+      {!['/login', '/reset-password', '/forgot-password']?.includes(
+        pathname
+      ) && <Sidebar />}
+    </SheetContent>
+  );
+};
+
 const Layout = ({ children }: props) => {
   const router = useRouter();
   const token = getJWTToken();
   const [unreadNotiCount] = useState(0);
-  const { currentShow, setCurrentShow } = useSidebarStore();
-  const currentDimensions = getWindowDimensions();
+  const { showSideBar, setShowSideBar, toggleSideBar } = useSidebarStore();
   const { width } = useWindowDimensions();
-
-  const [leftPanelDimension, setLeftPanelDimesion] = useState({
-    defaultSize: width > 1024 ? 16 : 4,
-    collapsedSize: 4,
-    minSize: 16,
-    maxSize: 16,
-  });
-  const [rightPanelDimension, setRightPanelDimesion] = useState({
-    defaultSize: width > 1024 ? 84 : 96,
-  });
-
-  useEffect(() => {
-    if (currentDimensions.width >= 1920) {
-      setLeftPanelDimesion({
-        defaultSize: currentShow ? 18 : 4,
-        collapsedSize: 4,
-        minSize: 18,
-        maxSize: 18,
-      });
-      setRightPanelDimesion({ defaultSize: currentShow ? 82 : 96 });
-    } else if (currentDimensions.width >= 1440) {
-      setLeftPanelDimesion({
-        defaultSize: currentShow ? 16 : 4,
-        collapsedSize: 4,
-        minSize: 16,
-        maxSize: 16,
-      });
-      setRightPanelDimesion({ defaultSize: currentShow ? 84 : 96 });
-    } else if (currentDimensions.width >= 1024) {
-      setLeftPanelDimesion({
-        defaultSize: currentShow ? 25 : 4,
-        collapsedSize: 4,
-        minSize: 23,
-        maxSize: 25,
-      });
-      setRightPanelDimesion({ defaultSize: currentShow ? 75 : 96 });
-    } else if (currentDimensions.width >= 768) {
-      setLeftPanelDimesion({
-        defaultSize: currentShow ? 30 : 4,
-        collapsedSize: 4,
-        minSize: 25,
-        maxSize: 30,
-      });
-      setRightPanelDimesion({ defaultSize: currentShow ? 70 : 96 });
-    } else {
-      setLeftPanelDimesion({
-        defaultSize: currentShow ? 40 : 4,
-        collapsedSize: 4,
-        minSize: 18,
-        maxSize: 40,
-      });
-      setRightPanelDimesion({ defaultSize: currentShow ? 60 : 96 });
-    }
-  }, [currentDimensions.width, width]);
 
   useEffect(() => {
     function logoutUser() {
@@ -106,35 +58,54 @@ const Layout = ({ children }: props) => {
     logoutUser();
   }, []);
 
+  useEffect(() => {
+    if (width < 768) {
+      setShowSideBar(false);
+    } else if (width >= 768 && showSideBar === false) {
+      // Do nothing, keep showSideBar as false
+    } else {
+      setShowSideBar(true);
+    }
+  }, [width]);
+
   return (
-    <>
-      <ResizablePanelGroup direction='horizontal' className='min-h-screen'>
-        <ResizablePanel
-          defaultSize={leftPanelDimension.defaultSize}
-          collapsedSize={leftPanelDimension.collapsedSize}
-          collapsible={true}
-          onCollapse={() => setCurrentShow(false)}
-          onExpand={() => setCurrentShow(true)}
-          minSize={leftPanelDimension.minSize}
-          maxSize={leftPanelDimension.maxSize}
+    <div className='relative min-h-screen'>
+      <Sheet>
+        <div
           className={cn(
-            !currentShow && 'min-w-[60px]',
-            'transition-all duration-300 ease-in-out'
+            showSideBar ? 'w-[300px]' : 'w-0',
+            'transition-all duration-500 h-full ease-in-out fixed z-50 left-0 overflow-x-hidden scrollbar-hide'
           )}
         >
-          <LoadSideBar />
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={rightPanelDimension.defaultSize}>
-          <main className='relative flex'>
-            {token && <Header unreadNotiCount={unreadNotiCount} />}
-            <div className={`w-full px-4 pt-4 pb-8 lg:ml-auto mt-[88px]`}>
-              {children}
-            </div>
-          </main>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </>
+          {width < 768 ? <LoadSideBarMobile /> : <LoadSideBar />}
+        </div>
+        {token && <Header unreadNotiCount={unreadNotiCount} />}
+        <div
+          className={`relative flex-1 flex items-center min-h-screen transition-margin duration-500 ${showSideBar ? 'ml-[304px] px-4' : 'ml-0'}`}
+        >
+          {width >= 768 && (
+            <button
+              className={cn(
+                showSideBar ? '-translate-x-full' : 'translate-x-0',
+                `absolute top-1/2 transform -translate-y-1/2 z-50 cursor-pointer text-gray-700 transition-transform duration-500`
+              )}
+              onClick={toggleSideBar}
+            >
+              {showSideBar ? (
+                <IoIosArrowBack className='w-5 h-5' />
+              ) : (
+                <IoIosArrowForward className='w-5 h-5' />
+              )}
+            </button>
+          )}
+          <div
+            className={`w-full ${showSideBar ? 'px-0' : 'px-6'} pt-4 pb-8 lg:ml-auto mt-[88px] min-h-screen`}
+          >
+            {children}
+          </div>
+        </div>
+      </Sheet>
+    </div>
   );
 };
 

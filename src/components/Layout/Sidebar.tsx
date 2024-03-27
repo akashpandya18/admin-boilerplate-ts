@@ -13,15 +13,12 @@ import Log from '@/assets/logout.gif';
 import Image from 'next/image';
 import packageJson from '../../../package.json';
 import useAuthStore from '@/store/userStore';
-import useSidebarStore from '@/store/sidebarStore';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function Sidebar() {
   const router = useRouter();
   const token = getJWTToken();
   const { user, clearTokens } = useAuthStore();
   const [logSrc, setLogSrc] = useState(LogStatic);
-  const { currentShow } = useSidebarStore();
   const version = packageJson.version;
 
   const [sidebarData, setSidebarData] = useState<
@@ -65,20 +62,11 @@ function Sidebar() {
 
   return (
     <div className={`block relative`}>
-      <div className='absolute z-50 flex flex-col w-full h-screen bg-gradient-to-b from-admin-primary to-admin-sidebarBackground'>
-        <div
-          className={`flex items-center justify-between ${currentShow ? 'p-6' : 'py-6 px-2 mx-auto'}`}
-        >
-          {currentShow ? (
-            <p className='text-2xl font-semibold text-white capitalize'>
-              Admin Panel
-            </p>
-          ) : (
-            <Avatar>
-              <AvatarImage src='https://github.com/vercel.png' />
-              <AvatarFallback>AP</AvatarFallback>
-            </Avatar>
-          )}
+      <div className='absolute z-30 flex flex-col w-full h-screen bg-gradient-to-b from-admin-primary to-admin-sidebarBackground'>
+        <div className={`flex items-center py-6 px-4`}>
+          <p className='text-2xl text-left font-semibold text-white capitalize'>
+            Admin Panel
+          </p>
         </div>
 
         <nav className='mt-4 space-y-3'>
@@ -87,31 +75,22 @@ function Sidebar() {
           )}
         </nav>
 
-        {currentShow ? (
-          <div className='absolute bottom-0 flex justify-start w-full px-6 py-4 text-sm text-admin-gray2'>
-            Version: {version}
-          </div>
-        ) : (
-          <div className='absolute bottom-0 flex justify-center w-full p-2 text-sm text-admin-gray2'>
-            <p className='text-sm font-medium text-white'>V {version}</p>
-          </div>
-        )}
-
+        <div className='absolute bottom-0 flex justify-start w-full px-6 py-4 text-sm text-admin-gray2'>
+          Version: {version}
+        </div>
         <div
           className={`absolute w-full py-2 border-t px-2 bottom-14 border-admin-sidebarBorder group`}
         >
           <div
             onMouseEnter={() => setLogSrc(Log)}
             onMouseLeave={() => setLogSrc(LogStatic)}
-            className={`flex items-center ${currentShow ? 'justify-start' : 'justify-center'} p-2 gap-x-2 rounded-md cursor-pointer group-hover:bg-white`}
+            className={`flex items-center justify-start p-2 gap-x-2 rounded-md cursor-pointer group-hover:bg-white`}
             onClick={handleLogout}
           >
             <Image src={logSrc} alt='logout_icon' height={30} width={30} />
-            {currentShow && (
-              <p className='text-base font-medium text-white group-hover:text-admin-primary'>
-                Logout
-              </p>
-            )}
+            <p className='text-base font-medium text-white group-hover:text-admin-primary'>
+              Logout
+            </p>
           </div>
         </div>
       </div>

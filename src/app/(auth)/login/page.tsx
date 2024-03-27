@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Api } from '@/app/api';
 import { setCookie, getCookie } from 'cookies-next';
 import useAuthStore from '@/store/userStore';
+import { toast } from 'sonner';
 
 const Login = () => {
   const { setAuthToken, setUser } = useAuthStore();
@@ -75,7 +76,7 @@ const Login = () => {
         router.push('/users');
       }
     } catch (error) {
-      console.log('error', error);
+      toast.error('Invalid email or password');
       setLoader(false);
     }
   };

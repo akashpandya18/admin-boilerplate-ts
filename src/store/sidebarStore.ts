@@ -1,13 +1,15 @@
 import { create } from 'zustand';
 
 interface SidebarStoreState {
-  currentShow: boolean;
-  setCurrentShow: (newShow: boolean) => void;
+  showSideBar: boolean;
+  setShowSideBar: (newShow: boolean) => void;
+  toggleSideBar: () => void;
 }
 
 const useSidebarStore = create<SidebarStoreState>((set) => ({
-  currentShow: false,
-  setCurrentShow: (currentShow: boolean) => set({ currentShow: currentShow }),
+  showSideBar: true,
+  setShowSideBar: (showSideBar: boolean) => set({ showSideBar: showSideBar }),
+  toggleSideBar: () => set((state) => ({ showSideBar: !state.showSideBar })),
 }));
 
 export default useSidebarStore;

@@ -11,6 +11,7 @@ import {
   classNames,
   getJWTToken,
   cleanCookies,
+  useWindowDimensions,
 } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -20,12 +21,18 @@ import BellStatic from '@/assets/bell-static.png';
 import Bell from '@/assets/bell.gif';
 import { getCookie } from 'cookies-next';
 import useAuthStore from '@/store/userStore';
+import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar';
+import useSidebarStore from '@/store/sidebarStore';
+import { SheetTrigger } from '@/components/ui/sheet';
+import { HiMenuAlt2 } from 'react-icons/hi';
 // import NotificationPopup from '@/app/components/common/NotificationPopup';
 
 function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
   const router = useRouter();
   const token = getJWTToken();
   const { clearTokens } = useAuthStore();
+  const { showSideBar } = useSidebarStore();
+  const { width } = useWindowDimensions();
   const [bellSrc, setBellSrc] = useState(BellStatic);
   // const [showPopup, setShowPopup] = useState(false);
   // const [notificationData, setNotificationData] = useState({});
@@ -63,7 +70,29 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
       <div
         className={`px-4 h-[88px] py-2 bg-white flex items-center justify-between absolute left-0 right-0 top-0 z-30 w-auto border-b`}
       >
-        <div />
+        <div className={`flex items-center py-6`}>
+          {!showSideBar && width >= 768 ? (
+            <Link href='/'>
+              <Avatar>
+                <AvatarImage
+                  src='https://github.com/vercel.png'
+                  height={34}
+                  width={34}
+                  className='rounded-full'
+                />
+                <AvatarFallback></AvatarFallback>
+              </Avatar>
+            </Link>
+          ) : (
+            <SheetTrigger asChild className='cursor-pointer'>
+              <Avatar>
+                <AvatarFallback>
+                  <HiMenuAlt2 className='w-6 h-6' />
+                </AvatarFallback>
+              </Avatar>
+            </SheetTrigger>
+          )}
+        </div>
         <div className='flex h-[88px]'>
           <div className='self-center border-r border-[#ECECEC] px-7 mx-7'>
             <div
@@ -100,7 +129,7 @@ function Header({ unreadNotiCount }: { unreadNotiCount: number }) {
                     //   src={userData.profile}
                     //   className='w-[50px] h-[50px] self-center rounded-full border border-[#EAEAEA]'
                     // />
-                    <div className='self-center bg-gradient-to-br from-admin-primary to-admin-sidebarBackground flex justify-center items-center w-[50px] h-[50px] rounded-full'>
+                    <div className='self-center bg-gradient-to-br from-admin-primary to-admin-sidebarBackground flex justify-center items-center w-[46px] h-[46px] rounded-full'>
                       <span className='text-white'>
                         {name && name[0]?.charAt(0)}
                       </span>

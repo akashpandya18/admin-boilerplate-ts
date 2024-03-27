@@ -25,7 +25,7 @@
 # # Check tsconfig standards
 # npm run check-types ||
 # (
-#     echo '🤡😂❌🤡 Failed Type check. 🤡😂❌🤡
+#     echo '❌ Failed Type check. ❌
 #             Are you seriously trying to write that? Make the changes required above.'
 #     false;
 # )

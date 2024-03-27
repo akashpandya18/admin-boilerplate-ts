@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
 import { usePathname } from 'next/navigation';
-import useSidebarStore from '@/store/sidebarStore';
 import { classNames } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -145,7 +144,6 @@ const subMenu: {
 
 const Menu = ({ item }: { item: any }) => {
   const pathname = usePathname();
-  const { currentShow } = useSidebarStore();
   const [src, setSrc] = useState(item.staticIcon);
 
   const getStatus = () => {
@@ -179,12 +177,11 @@ const Menu = ({ item }: { item: any }) => {
           alt='sidebar_icon'
           height={30}
           width={30}
-          className={`${currentShow ? 'mr-3 ml-2' : 'm-auto'} text-white hover:rounded-full`}
+          className={`mr-3 ml-2 text-white hover:rounded-full`}
         />
 
-        {currentShow && item.name}
-        {currentShow &&
-          item.isDropDown &&
+        {item.name}
+        {item.isDropDown &&
           (showSubMenu ? (
             <HiChevronUp className='w-5 h-5 ml-2' />
           ) : (
