@@ -87,7 +87,7 @@ const Layout = ({ children }: props) => {
             <button
               className={cn(
                 showSideBar ? '-translate-x-full' : 'translate-x-0',
-                `absolute top-1/2 transform -translate-y-1/2 z-50 cursor-pointer text-gray-700 transition-transform duration-500`
+                `absolute top-1/2 transform -translate-y-1/2 z-50 cursor-pointer text-gray-400 transition-transform duration-500`
               )}
               onClick={toggleSideBar}
             >

@@ -72,7 +72,7 @@ api.interceptors.response.use(
   }
 );
 
-const GetApi = async (tag = '') => await api.get(tag).then((data) => data.data);
+const GetApi = async (tag = '') => api.get(tag).then((data) => data.data);
 
 const PostApi = async (tag = '', reqBody: null) =>
   await api.post(tag, reqBody === null ? {} : reqBody).then((data) => data);
